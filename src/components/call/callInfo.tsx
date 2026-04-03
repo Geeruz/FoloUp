@@ -384,10 +384,10 @@ function CallInfo({ call_id, onDeleteResponse, onCandidateStatusChange }: CallPr
                 <div className="">
                   <div className="font-medium  ">
                     <span className="font-normal">Call Summary: </span>
-                    {call?.call_analysis?.call_summary === undefined ? (
+                    {call?.call_analysis?.call_summary === undefined && analytics?.softSkillSummary === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (
-                      call?.call_analysis?.call_summary
+                      (analytics?.softSkillSummary || call?.call_analysis?.call_summary || "No summary available")
                     )}
                   </div>
                 </div>

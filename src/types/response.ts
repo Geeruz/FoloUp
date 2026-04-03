@@ -18,13 +18,17 @@ export interface Response {
 export interface Analytics {
   overallScore: number;
   overallFeedback: string;
+  conceptualUnderstanding?: { score: number; feedback: string };
   communication: { score: number; feedback: string };
-  generalIntelligence: string;
+  generalIntelligence?: string;
   softSkillSummary: string;
   questionSummaries: Array<{
     question: string;
+    classification?: string;
     summary: string;
   }>;
+  redFlags?: string[];
+  skippedQuestionCount?: number;
 }
 
 export interface FeedbackData {

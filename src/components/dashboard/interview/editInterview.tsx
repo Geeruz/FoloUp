@@ -76,7 +76,7 @@ function EditInterview({ interview }: EditInterviewProps) {
 
   const handleAddQuestion = () => {
     if (questions.length < numQuestions) {
-      setQuestions([...questions, { id: uuidv4(), question: "", follow_up_count: 1 }]);
+      setQuestions([...questions, { id: uuidv4(), question: "", follow_up_count: 1, round: "hr" }]);
     }
   };
 

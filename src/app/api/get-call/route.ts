@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   }
   const callOutput = await retell.call.retrieve(body.id);
   const interviewId = callDetails?.interview_id;
-  callResponse = callOutput;
+  callResponse = { ...(callResponse || {}), ...callOutput };
   const duration = Math.round(
     callResponse.end_timestamp / 1000 - callResponse.start_timestamp / 1000,
   );
@@ -37,15 +37,15 @@ export async function POST(req: Request) {
     transcript: callResponse.transcript,
   };
   const result = await generateInterviewAnalytics(payload);
-
   const analytics = result.analytics;
+  const is_analysed = !!analytics;
 
   await ResponseService.saveResponse(
     {
       details: callResponse,
-      is_analysed: true,
+      is_analysed: is_analysed,
       duration: duration,
-      analytics: analytics,
+      analytics: analytics || null,
     },
     body.id,
   );

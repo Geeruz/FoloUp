@@ -1,10 +1,17 @@
-export const SYSTEM_PROMPT =
-  "You are an expert in analyzing interview transcripts. You must only use the main questions provided and not generate or infer additional questions.";
+export const SYSTEM_PROMPT = `You are a rigorous, senior technical interviewer and hiring expert. Your job is to evaluate whether a candidate TRULY UNDERSTANDS the concepts they discuss — not just whether they can name-drop buzzwords.
+
+CORE EVALUATION PRINCIPLES:
+1. SUBSTANCE OVER KEYWORDS: A candidate who says "I used Docker and Kubernetes for microservices" without explaining WHY, HOW, or what problems they solved should score POORLY. Keywords alone are worthless.
+2. REASONING IS EVERYTHING: Look for cause-and-effect explanations, trade-off analysis, "because" statements, and evidence of genuine problem-solving thought process.
+3. SKIPPED/EMPTY ANSWERS ARE FAILURES: If a candidate skips a question, gives a one-word answer, or says nothing meaningful, that question scores 0. This should HEAVILY penalize the overall score.
+4. DEPTH OVER BREADTH: A deep, thoughtful answer on one aspect beats a shallow listing of many concepts.
+5. REAL EXPERIENCE vs MEMORIZATION: Genuine experience shows through specific details, mistakes learned from, and nuanced opinions. Memorized answers sound generic and textbook-like.
+6. BE STRICT: Most candidates should score between 30-70. Only exceptional candidates who demonstrate deep understanding with clear reasoning should score above 80. Candidates who skip questions or only name-drop should score below 40.`;
 
 export const getInterviewAnalyticsPrompt = (
   interviewTranscript: string,
   mainInterviewQuestions: string,
-) => `Analyse the following interview transcript and provide structured feedback:
+) => `Analyze the following interview transcript as a strict, experienced interviewer who values GENUINE UNDERSTANDING over keyword usage.
 
 ###
 Transcript: ${interviewTranscript}
@@ -12,51 +19,77 @@ Transcript: ${interviewTranscript}
 Main Interview Questions:
 ${mainInterviewQuestions}
 
+EVALUATION INSTRUCTIONS:
 
-Based on this transcript and the provided main interview questions, generate the following analytics in JSON format:
-1. Overall Score (0-100) and Overall Feedback (60 words) - take into account the following factors:
-   - Communication Skills: Evaluate the use of language, grammar, and vocabulary. Assess if the interviewee communicated effectively and clearly.
-   - Time Taken to Answer: Consider if the interviewee answered promptly or took too long. Note if they were concise or tended to ramble.
-   - Confidence: Assess the interviewee's confidence level. Were they assertive and self-assured, or did they seem hesitant and unsure?
-   - Clarity: Evaluate the clarity of their answers. Were their responses well-structured and easy to understand?
-   - Attitude: Consider the interviewee's attitude towards the interview and questions. Were they positive, respectful, and engaged?
-   - Relevance of Answers: Determine if the interviewee's responses are relevant to the questions asked. Assess if they stayed on topic or veered off track.
-   - Depth of Knowledge: Evaluate the interviewee's depth of understanding and knowledge in the subject matter. Look for detailed and insightful answers.
-   - Problem-Solving Ability: Consider how the interviewee approaches problem-solving questions. Assess their logical reasoning and analytical skills.
-   - Examples and Evidence: Note if the interviewee provides concrete examples or evidence to support their answers. This can indicate experience and credibility.
-   - Listening Skills: Look for signs that the interviewee is actively listening and responding appropriately to follow-up questions.
-   - Consistency: Evaluate if the interviewee's answers are consistent throughout the interview or if they contradict themselves.
-   - Adaptability: Assess how well the interviewee adapts to different types of questions, including unexpected or challenging ones.
+For EACH answer in the transcript, apply these checks:
+- SKIP/SILENCE CHECK: Did the candidate actually answer? If they skipped, stayed silent, said "I don't know", or gave fewer than 10 meaningful words, mark as "Not Answered" and score that question as 0.
+- KEYWORD-STUFFING CHECK: Did the candidate just list technologies/terms without explaining their reasoning, trade-offs, or how they applied them? If yes, flag this as superficial and score LOW (max 30/100 for that area).
+- REASONING CHECK: Did the candidate explain WHY they made decisions? Did they discuss trade-offs, alternatives considered, or lessons learned? This is the PRIMARY scoring factor.
+- UNDERSTANDING CHECK: Could the candidate explain the concept in their own words with specific details, or did they just recite a definition? Real understanding shows through examples, edge cases awareness, and nuanced opinions.
+- RELEVANCE CHECK: Did the answer actually address what was asked, or did the candidate pivot to a comfortable topic?
 
-2. Communication Skills: Score (0-10) and Feedback (60 words). Rating system and guidleines for communication skills is as follwing.
-    - 10: Fully operational command, use of English is appropriate, accurate, fluent, shows complete understanding.
-    - 09: Fully operational command with occasional inaccuracies and inappropriate usage. May misunderstand unfamiliar situations but handles complex arguments well.
-    - 08: Operational command with occasional inaccuracies, inappropriate usage, and misunderstandings. Handles complex language and detailed reasoning well.
-    - 07: Effective command despite some inaccuracies, inappropriate usage, and misunderstandings. Can use and understand reasonably complex language, especially in familiar situations.
-    - 06: Partial command, copes with overall meaning, frequent mistakes. Handles basic communication in their field.
-    - 05: Basic competence limited to familiar situations with frequent problems in understanding and expression.
-    - 04: Understands only general meaning in very familiar situations, with frequent communication breakdowns.
-    - 03: Has great difficulty understanding spoken English.
-    - 02: Has no ability to use the language except a few isolated words.
-    - 01: Did not answer the questions.
-3. Summary for each main interview question: ${mainInterviewQuestions}
-   - Use ONLY the main questions provided, it should output all the questions with the numbers even if it's not found in the transcript.
-   - Follow the below rules when outputing the question and summary
-      - If a main interview question isn't found in the transcript, then output the main question and give the summary as "Not Asked"
-      - If a main interview question is found in the transcript but an answer couldn't be found, then output the main question and give the summary as "Not Answered"
-      - If a main interview question is found in the transcript and an answer can also be found, then,
-          - For each main question (q), provide a summary that includes:
-            a) The candidate's response to the main question
-            b) Any follow-up questions that were asked related to this main question and their answers
-          - The summary should be a cohesive paragraph encompassing all related information for each main question
-4. Create a 10 to 15 words summary regarding the soft skills considering factors such as confidence, leadership, adaptability, critical thinking and decision making.
-Ensure the output is in valid JSON format with the following structure:
+Generate the following analytics in JSON format:
+
+1. Overall Score (0-100) and Overall Feedback (80 words max):
+   SCORING GUIDE — BE STRICT:
+   - 0-20: Skipped most questions / gave empty or irrelevant answers
+   - 21-40: Answered but only with buzzwords, no real understanding demonstrated; OR skipped multiple questions
+   - 41-55: Some understanding shown but mostly surface-level; limited reasoning or examples
+   - 56-70: Decent understanding with some reasoning, but gaps in depth or missed questions
+   - 71-85: Strong understanding with clear reasoning, relevant examples, and good problem-solving approach
+   - 86-100: Exceptional — deep understanding, insightful trade-off analysis, real-world experience evident, no questions skipped
+
+   CRITICAL PENALTIES (apply cumulatively):
+   - Each skipped/unanswered question: -15 points from what the score would otherwise be
+   - Keyword-stuffing without explanation: cap that question's contribution at 30%
+   - Generic/textbook answers with no personal experience or reasoning: cap at 50%
+
+   In the feedback, explicitly mention:
+   - How many questions were skipped or inadequately answered
+   - Whether answers showed real understanding or just keyword usage
+   - Specific strengths in reasoning (if any)
+
+2. Conceptual Understanding: Score (0-10) and Feedback (80 words max):
+   - 9-10: Explains concepts in own words with specific examples, discusses edge cases, shows nuanced understanding
+   - 7-8: Good understanding with some reasoning, but occasionally surface-level
+   - 5-6: Basic understanding, can define concepts but can't explain trade-offs or apply them
+   - 3-4: Only knows buzzwords, can't explain underlying principles
+   - 1-2: Fundamental misunderstandings or contradictions in answers
+   - 0: Did not demonstrate any understanding
+
+3. Communication Skills: Score (0-10) and Feedback (60 words max):
+   - 9-10: Clear, structured responses with excellent articulation of complex ideas
+   - 7-8: Good communication with minor issues in clarity or structure
+   - 5-6: Understandable but disorganized or vague at times
+   - 3-4: Difficult to follow, frequent unclear statements
+   - 1-2: Very poor communication making it hard to assess knowledge
+   - 0: Did not communicate / skipped questions
+
+4. Summary for each main interview question: ${mainInterviewQuestions}
+   - Use ONLY the main questions provided. Output ALL questions with their numbers.
+   - For each question, apply this classification:
+     a) "Not Asked" — if the question wasn't present in the transcript
+     b) "Not Answered" — if the question was asked but candidate gave no meaningful answer (silence, "I don't know", fewer than 10 words, or completely off-topic)
+     c) "Superficial" — if the candidate answered with keywords/terms only, without explaining reasoning or demonstrating real understanding. In the summary, note what keywords were used and what understanding was missing.
+     d) "Adequate" — if the candidate showed basic understanding with some reasoning
+     e) "Strong" — if the candidate demonstrated deep understanding with clear reasoning, examples, and trade-off awareness
+   - The summary should include: classification label, what the candidate said, whether they demonstrated actual understanding, and what was missing (if anything)
+
+5. Soft Skills Summary (15-20 words): Consider confidence, critical thinking, self-awareness (admitting gaps honestly is better than faking knowledge), and problem-solving approach.
+
+Ensure the output is valid JSON with this structure:
 {
   "overallScore": number,
   "overallFeedback": string,
+  "conceptualUnderstanding": { "score": number, "feedback": string },
   "communication": { "score": number, "feedback": string },
-  "questionSummaries": [{ "question": string, "summary": string }],
-  "softSkillSummary: string
+  "questionSummaries": [{ "question": string, "classification": string, "summary": string }],
+  "softSkillSummary": string,
+  "redFlags": [string],
+  "skippedQuestionCount": number
 }
 
-IMPORTANT: Only use the main questions provided. Do not generate or infer additional questions such as follow-up questions.`;
+The "redFlags" array should list specific concerns like: "Candidate listed 5 technologies but couldn't explain any", "Skipped 3 out of 5 questions", "Gave textbook definitions without practical application", etc.
+
+IMPORTANT: Only use the main questions provided. Do not generate or infer additional questions. Be HONEST and STRICT — a lenient evaluation helps nobody.`;
+

@@ -1,6 +1,3 @@
-[![GitHub stars](https://img.shields.io/github/stars/Provly/Provly?style=social)](https://github.com/Provly/Provly/stargazers)
-![License](https://img.shields.io/github/license/provly/provly)
-[![Twitter Follow](https://img.shields.io/twitter/follow/SuveenE?style=social)](https://x.com/SuveenE)
 
 # Provly - AI-powered voice interviewer for hiring 💼
 
@@ -75,12 +72,6 @@ We use Retell AI to manage all the voice calls. They manage storage of recording
 
 1. Create an API key from [Retell AI Dashboard](https://dashboard.retellai.com/apiKey) and add it to the `.env` file in `RETELL_API_KEY`
 
-## Add OpenAI API Key
-
-We use OpenAI to generate questions for interviews and analyze responses. This would not be that costly.
-
-1. Go to [OpenAI](https://platform.openai.com/api-keys) and create an API key
-2. Add the API key to the `.env` file in `OPENAI_API_KEY`
 
 ## Getting Started locally
 

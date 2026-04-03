@@ -76,7 +76,10 @@ function DetailsPopup({
 
     const generatedQuestions = (await axios.post("/api/generate-interview-questions", data)) as any;
 
-    const generatedQuestionsResponse = JSON.parse(generatedQuestions?.data?.response);
+    const rawResponse = generatedQuestions?.data?.response || "{}";
+    const match = rawResponse.match(/\{[\s\S]*\}/);
+    const cleanResponse = match ? match[0] : rawResponse;
+    const generatedQuestionsResponse = JSON.parse(cleanResponse);
 
     const updatedQuestions = generatedQuestionsResponse.questions.map((question: Question) => ({
       id: uuidv4(),

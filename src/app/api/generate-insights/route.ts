@@ -51,7 +51,9 @@ export async function POST(req: Request) {
     });
 
     const content = result.response.text();
-    const insightsResponse = JSON.parse(content);
+    const match = content.match(/\{[\s\S]*\}/);
+    const cleanContent = match ? match[0] : content;
+    const insightsResponse = JSON.parse(cleanContent);
 
     await InterviewService.updateInterview(
       { insights: insightsResponse.insights },
