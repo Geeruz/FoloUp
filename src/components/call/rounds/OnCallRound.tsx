@@ -81,28 +81,32 @@ export default function OnCallRound({
   useEffect(() => {
     const webClient = new RetellWebClient();
     webClientRef.current = webClient;
+    let cancelled = false;
 
     webClient.on("call_started", () => {
+      if (cancelled) return;
       console.log("On Call round: Call started");
       setIsCalling(true);
       setIsConnecting(false);
     });
 
     webClient.on("call_ended", () => {
+      if (cancelled) return;
       console.log("On Call round: Call ended");
       setIsCalling(false);
       setIsEnded(true);
     });
 
     webClient.on("agent_start_talking", () => {
-      setActiveTurn("agent");
+      if (!cancelled) setActiveTurn("agent");
     });
 
     webClient.on("agent_stop_talking", () => {
-      setActiveTurn("user");
+      if (!cancelled) setActiveTurn("user");
     });
 
     webClient.on("error", (error) => {
+      if (cancelled) return;
       console.error("On Call round error:", error);
       webClient.stopCall();
       setIsEnded(true);
@@ -111,6 +115,7 @@ export default function OnCallRound({
     });
 
     webClient.on("update", (update) => {
+      if (cancelled) return;
       if (update.transcript) {
         const transcripts: transcriptType[] = update.transcript;
         const roleContents: { [key: string]: string } = {};
@@ -141,11 +146,15 @@ export default function OnCallRound({
       };
 
       try {
+        if (cancelled) return;
+
         const registerCallResponse: registerCallResponseType =
           await axios.post("/api/register-call", {
             dynamic_data: data,
             interviewer_id: interview.interviewer_id,
           });
+
+        if (cancelled) return;
 
         if (registerCallResponse.data.registerCallResponse.access_token) {
           setCallId(registerCallResponse.data.registerCallResponse.call_id);
@@ -157,24 +166,23 @@ export default function OnCallRound({
             .catch(console.error);
         } else {
           console.log("Failed to register call");
-          setIsConnecting(false);
+          if (!cancelled) setIsConnecting(false);
         }
       } catch (error) {
         console.error("Failed to start On Call round:", error);
-        setIsConnecting(false);
+        if (!cancelled) setIsConnecting(false);
       }
     };
 
     startCall();
 
     return () => {
+      cancelled = true;
       webClient.removeAllListeners();
-      if (isCalling) {
-        try {
-          webClient.stopCall();
-        } catch (_e) {
-          // ignore
-        }
+      try {
+        webClient.stopCall();
+      } catch (_e) {
+        // ignore — call may not be active
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
