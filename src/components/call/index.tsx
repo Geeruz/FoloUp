@@ -154,8 +154,10 @@ function Call({ interview }: InterviewProps) {
       call_id: onCallId,
       email: email,
       name: name,
-      hr_transcript: hrTranscripts,
-      evaluation_transcript: evaluationTranscripts,
+      details: {
+        hr_transcript: hrTranscripts,
+        evaluation_transcript: evaluationTranscripts,
+      },
     });
 
     setIsEnded(true);

@@ -41,10 +41,12 @@ export async function POST(req: Request) {
     });
 
     const analysis = result.response.text();
+    const match = analysis.match(/\{[\s\S]*\}/);
+    const cleanAnalysis = match ? match[0] : analysis;
 
     logger.info("Communication analysis completed successfully");
 
-    return NextResponse.json({ analysis: JSON.parse(analysis || "{}") }, { status: 200 });
+    return NextResponse.json({ analysis: JSON.parse(cleanAnalysis) }, { status: 200 });
   } catch (error) {
     logger.error("Error analyzing communication skills", String(error));
     console.error("Analysis error details:", error);

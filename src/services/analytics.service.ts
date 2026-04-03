@@ -54,7 +54,9 @@ export const generateInterviewAnalytics = async (payload: {
     });
 
     const content = result.response.text();
-    const analyticsResponse = JSON.parse(content);
+    const match = content.match(/\{[\s\S]*\}/);
+    const cleanContent = match ? match[0] : content;
+    const analyticsResponse = JSON.parse(cleanContent);
 
     analyticsResponse.mainInterviewQuestions = questions.map((q: Question) => q.question);
 
