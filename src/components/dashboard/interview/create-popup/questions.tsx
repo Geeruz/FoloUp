@@ -53,7 +53,7 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
 
   const handleAddQuestion = () => {
     if (questions.length < interviewData.question_count) {
-      setQuestions([...questions, { id: uuidv4(), question: "", follow_up_count: 1 }]);
+      setQuestions([...questions, { id: uuidv4(), question: "", follow_up_count: 1, round: "hr" }]);
     }
   };
 
