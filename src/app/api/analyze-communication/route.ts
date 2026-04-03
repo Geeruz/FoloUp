@@ -17,9 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Transcript is required" }, { status: 400 });
     }
 
-    const genai = new GoogleGenerativeAI({
-      apiKey: process.env.GEMINI_API_KEY,
-    });
+    const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
     const model = genai.getGenerativeModel({
       model: "gemini-2.0-flash",
@@ -48,7 +46,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ analysis: JSON.parse(analysis || "{}") }, { status: 200 });
   } catch (error) {
-    logger.error("Error analyzing communication skills", error);
+    logger.error("Error analyzing communication skills", String(error));
     console.error("Analysis error details:", error);
 
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

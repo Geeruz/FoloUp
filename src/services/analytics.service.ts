@@ -28,9 +28,7 @@ export const generateInterviewAnalytics = async (payload: {
       .map((q: Question, index: number) => `${index + 1}. ${q.question}`)
       .join("\n");
 
-    const genai = new GoogleGenerativeAI({
-      apiKey: process.env.GEMINI_API_KEY,
-    });
+    const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
     const model = genai.getGenerativeModel({
       model: "gemini-2.0-flash",
