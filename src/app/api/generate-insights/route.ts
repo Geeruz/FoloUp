@@ -19,9 +19,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const genai = new GoogleGenerativeAI({
-    apiKey: process.env.GEMINI_API_KEY,
-  });
+  const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
   const model = genai.getGenerativeModel({
     model: "gemini-2.0-flash",
@@ -69,7 +67,7 @@ export async function POST(req: Request) {
       { status: 200 },
     );
   } catch (error) {
-    logger.error("Error generating insights", error);
+    logger.error("Error generating insights", String(error));
     console.error("Insights error details:", error);
 
     return NextResponse.json({ error: "internal server error" }, { status: 500 });
