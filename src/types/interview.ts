@@ -1,7 +1,10 @@
+export type InterviewRound = "hr" | "evaluation" | "oncall";
+
 export interface Question {
   id: string;
   question: string;
   follow_up_count: number;
+  round?: InterviewRound;
 }
 
 export interface Quote {
