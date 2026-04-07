@@ -13,6 +13,7 @@ interface InterviewFlowProps {
   interview: Interview;
   userName: string;
   userEmail: string;
+  resumeText?: string;
   onInterviewComplete: (data: InterviewFlowResult) => void;
 }
 
@@ -92,6 +93,7 @@ export default function InterviewFlow({
   interview,
   userName,
   userEmail,
+  resumeText,
   onInterviewComplete,
 }: InterviewFlowProps) {
   const [currentRound, setCurrentRound] = useState<RoundKey>("hr");
@@ -233,6 +235,9 @@ export default function InterviewFlow({
             <OnCallRound
               interview={interview}
               userName={userName}
+              hrTranscripts={hrTranscripts}
+              evaluationTranscripts={evaluationTranscripts}
+              resumeText={resumeText}
               onRoundComplete={handleOnCallComplete}
             />
           )}

@@ -4,6 +4,7 @@ import type { Interview } from "@/types/interview";
 import { RetellWebClient } from "retell-client-js-sdk";
 import Image from "next/image";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import type { TextRoundTranscript } from "./TextRound";
 import axios from "axios";
 import { XCircleIcon } from "lucide-react";
 import {
@@ -38,12 +39,18 @@ type transcriptType = {
 interface OnCallRoundProps {
   interview: Interview;
   userName: string;
+  hrTranscripts?: TextRoundTranscript[];
+  evaluationTranscripts?: TextRoundTranscript[];
+  resumeText?: string;
   onRoundComplete: (callId: string) => void;
 }
 
 export default function OnCallRound({
   interview,
   userName,
+  hrTranscripts,
+  evaluationTranscripts,
+  resumeText,
   onRoundComplete,
 }: OnCallRoundProps) {
   const webClientRef = useRef<RetellWebClient | null>(null);
@@ -143,6 +150,12 @@ export default function OnCallRound({
           onCallQuestions ||
           interview.questions.map((q) => q.question).join(", "),
         name: userName || "not provided",
+        resume: resumeText || "No resume provided",
+        previous_answers: `HR Round Answers:\n${
+          hrTranscripts?.map((t) => `Q: ${t.question}\nA: ${t.answer}`).join("\n\n") || "None"
+        }\n\nEvaluation Round Answers:\n${
+          evaluationTranscripts?.map((t) => `Q: ${t.question}\nA: ${t.answer}`).join("\n\n") || "None"
+        }`
       };
 
       try {

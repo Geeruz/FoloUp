@@ -22,7 +22,9 @@ import {
   AlarmClockIcon,
   ArrowUpRightSquareIcon,
   CheckCircleIcon,
+  UploadIcon,
 } from "lucide-react";
+import { parsePdf } from "@/actions/parse-pdf";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
@@ -59,6 +61,34 @@ function Call({ interview }: InterviewProps) {
   const [time, setTime] = useState(0);
   const [currentTimeDuration, setCurrentTimeDuration] =
     useState<string>("0");
+  const [resumeText, setResumeText] = useState<string>("");
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [isParsingResume, setIsParsingResume] = useState(false);
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setResumeFile(file);
+      setIsParsingResume(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const result = await parsePdf(formData);
+        if (result?.success && result.text) {
+          setResumeText(result.text);
+          toast.success("Resume parsed successfully!");
+        } else {
+          toast.error("Failed to parse resume.");
+          setResumeFile(null);
+        }
+      } catch (error) {
+        toast.error("An error occurred while uploading. Please try again.");
+        setResumeFile(null);
+      } finally {
+        setIsParsingResume(false);
+      }
+    }
+  };
 
   const handleFeedbackSubmit = async (
     formData: Omit<FeedbackData, "interview_id">,
@@ -259,6 +289,17 @@ function Call({ interview }: InterviewProps) {
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
+                      <div className="flex flex-col items-center justify-center mb-4 w-[75%] mx-auto">
+                        <label className="w-full h-fit flex flex-col items-center justify-center px-4 py-3 bg-white text-gray-500 rounded-lg shadow-sm tracking-wide uppercase border-2 border-dashed border-gray-400 cursor-pointer hover:bg-gray-50 hover:text-indigo-500 transition-colors">
+                          <div className="flex flex-row items-center gap-2">
+                            {isParsingResume ? <MiniLoader /> : <UploadIcon className="w-4 h-4" />}
+                            <span className="text-xs font-semibold leading-normal truncate max-w-[200px]">
+                              {isParsingResume ? "Parsing..." : resumeFile ? resumeFile.name : "Upload Resume (Optional)"}
+                            </span>
+                          </div>
+                          <input type="file" className="hidden" accept=".pdf" onChange={handleResumeUpload} disabled={isParsingResume} />
+                        </label>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -276,6 +317,7 @@ function Call({ interview }: InterviewProps) {
                     }}
                     disabled={
                       Loading ||
+                      isParsingResume ||
                       (!interview?.is_anonymous &&
                         (!isValidEmail || !name))
                     }
@@ -324,6 +366,7 @@ function Call({ interview }: InterviewProps) {
                 interview={interview}
                 userName={name}
                 userEmail={email}
+                resumeText={resumeText}
                 onInterviewComplete={handleInterviewComplete}
               />
             )}

@@ -22,7 +22,11 @@ export const generateInterviewAnalytics = async (payload: {
       return { analytics: response.analytics as Analytics, status: 200 };
     }
 
-    const interviewTranscript = transcript || response.details?.transcript;
+    const hrTranscriptsStr = response.details?.hr_transcript?.map((t: any) => `Q: ${t.question}\nA: ${t.answer}`).join("\n\n") || "";
+    const evalTranscriptsStr = response.details?.evaluation_transcript?.map((t: any) => `Q: ${t.question}\nA: ${t.answer}`).join("\n\n") || "";
+    const baseTranscript = transcript || response.details?.transcript || "";
+    
+    const interviewTranscript = `--- HR Round Answers ---\n${hrTranscriptsStr || "None"}\n\n--- Evaluation Round Answers ---\n${evalTranscriptsStr || "None"}\n\n--- On Call Round Conversation ---\n${baseTranscript}`;
     const questions = interview?.questions || [];
     const mainInterviewQuestions = questions
       .map((q: Question, index: number) => `${index + 1}. ${q.question}`)
