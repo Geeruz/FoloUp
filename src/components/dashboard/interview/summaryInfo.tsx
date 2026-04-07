@@ -65,16 +65,20 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
   const [tableData, setTableData] = useState<TableData[]>([]);
 
   const prepareTableData = (responses: Response[]): TableData[] => {
-    return responses.map((response) => ({
-      call_id: response.call_id,
-      name: response.name || "Anonymous",
-      overallScore: response.analytics?.overallScore || 0,
-      communicationScore: response.analytics?.communication?.score || 0,
-      callSummary:
-        response.analytics?.softSkillSummary ||
-        response.details?.call_analysis?.call_summary ||
-        "No summary available",
-    }));
+    return responses.map((response) => {
+      const analyticsSummary =
+        response.analytics?.softSkillSummary ??
+        response.analytics?.soft_skill_summary ??
+        response.details?.call_analysis?.call_summary;
+
+      return {
+        call_id: response.call_id,
+        name: response.name || "Anonymous",
+        overallScore: response.analytics?.overallScore || 0,
+        communicationScore: response.analytics?.communication?.score || 0,
+        callSummary: analyticsSummary?.trim() || "No summary available",
+      };
+    });
   };
 
   useEffect(() => {

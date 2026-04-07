@@ -387,7 +387,12 @@ function CallInfo({ call_id, onDeleteResponse, onCandidateStatusChange }: CallPr
                     {call?.call_analysis?.call_summary === undefined && analytics?.softSkillSummary === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (
-                      (analytics?.softSkillSummary || call?.call_analysis?.call_summary || "No summary available")
+                      (
+                        analytics?.softSkillSummary ||
+                        analytics?.soft_skill_summary ||
+                        call?.call_analysis?.call_summary ||
+                        "No summary available"
+                      )
                     )}
                   </div>
                 </div>

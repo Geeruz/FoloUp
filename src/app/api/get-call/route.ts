@@ -40,6 +40,14 @@ export async function POST(req: Request) {
   const analytics = result.analytics;
   const is_analysed = !!analytics;
 
+  if (!is_analysed) {
+    logger.error("Analytics generation failed", {
+      callId: body.id,
+      status: result.status,
+      error: result.error,
+    });
+  }
+
   await ResponseService.saveResponse(
     {
       details: callResponse,
@@ -50,7 +58,11 @@ export async function POST(req: Request) {
     body.id,
   );
 
-  logger.info("Call analysed successfully");
+  if (is_analysed) {
+    logger.info("Call analysed successfully");
+  } else {
+    logger.warn("Call analysis incomplete; analytics not saved", { callId: body.id });
+  }
 
   return NextResponse.json(
     {

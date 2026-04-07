@@ -58,9 +58,14 @@ export const generateInterviewAnalytics = async (payload: {
     });
 
     const content = result.response.text();
+    console.log("Gemini analytics raw response:", content);
     const match = content.match(/\{[\s\S]*\}/);
     const cleanContent = match ? match[0] : content;
     const analyticsResponse = JSON.parse(cleanContent);
+
+    if (!analyticsResponse.softSkillSummary) {
+      console.warn("Analytics response missing softSkillSummary field", analyticsResponse);
+    }
 
     analyticsResponse.mainInterviewQuestions = questions.map((q: Question) => q.question);
 
