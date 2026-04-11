@@ -24,7 +24,6 @@ export interface Analytics {
   softSkillSummary: string;
   questionSummaries: Array<{
     question: string;
-    classification?: string;
     summary: string;
   }>;
   redFlags?: string[];

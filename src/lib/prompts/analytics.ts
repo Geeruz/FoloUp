@@ -58,14 +58,10 @@ Generate the following analytics in JSON format:
    - 0: Did not communicate / skipped questions
 
 4. Summary for each main interview question: ${mainInterviewQuestions}
-   - Use ONLY the main questions provided. Output ALL questions with their numbers.
-   - For each question, apply this classification:
-     a) "Not Asked" — if the question wasn't present in the transcript
-     b) "Not Answered" — if the question was asked but candidate gave no meaningful answer (silence, "I don't know", fewer than 10 words, or completely off-topic)
-     c) "Superficial" — if the candidate answered with keywords/terms only, without explaining reasoning or demonstrating real understanding. In the summary, note what keywords were used and what understanding was missing.
-     d) "Adequate" — if the candidate showed basic understanding with some reasoning
-     e) "Strong" — if the candidate demonstrated deep understanding with clear reasoning, examples, and trade-off awareness
-   - The summary should include: classification label, what the candidate said, whether they demonstrated actual understanding, and what was missing (if anything)
+   - For each question, provide ONLY what the candidate actually said in response to that question.
+   - Keep it brief - just the direct answer/statement from the candidate.
+   - If no answer was given, note "No answer provided".
+   - Do not include analysis, classification, or evaluation - just the raw response.
 
 5. Soft Skills Summary (15-20 words): Consider confidence, critical thinking, self-awareness (admitting gaps honestly is better than faking knowledge), and problem-solving approach.
 
@@ -75,7 +71,7 @@ Ensure the output is valid JSON with this structure:
   "overallFeedback": string,
   "conceptualUnderstanding": { "score": number, "feedback": string },
   "communication": { "score": number, "feedback": string },
-  "questionSummaries": [{ "question": string, "classification": string, "summary": string }],
+  "questionSummaries": [{ "question": string, "summary": string }],
   "softSkillSummary": string,
   "redFlags": [string],
   "skippedQuestionCount": number
