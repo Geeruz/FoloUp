@@ -31,10 +31,17 @@ export async function POST(req: NextRequest) {
       console.log("Call ended event received", call.call_id);
       break;
     case "call_analyzed": {
-      const result = await axios.post("/api/get-call", {
-        id: call.call_id,
-      });
-      console.log("Call analyzed event received", call.call_id);
+      const host = req.headers.get("host") || process.env.NEXT_PUBLIC_LIVE_URL || "localhost:3000";
+      const protocol = host.includes("localhost") ? "http" : "https";
+      const apiUrl = `${protocol}://${host}/api/get-call`;
+      try {
+        await axios.post(apiUrl, {
+          id: call.call_id,
+        });
+        console.log("Call analyzed event received", call.call_id);
+      } catch (error) {
+        console.error("Failed to invoke get-call from webhook", error);
+      }
       break;
     }
     default:

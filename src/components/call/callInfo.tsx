@@ -389,9 +389,10 @@ function CallInfo({ call_id, onDeleteResponse, onCandidateStatusChange }: CallPr
                     ) : (
                       (
                         analytics?.softSkillSummary ||
-                        analytics?.soft_skill_summary ||
                         call?.call_analysis?.call_summary ||
-                        "No summary available"
+                        (analytics?.redFlags?.includes("API quota exceeded")
+                          ? "Analytics temporarily unavailable due to API quota limits"
+                          : "No summary available")
                       )
                     )}
                   </div>

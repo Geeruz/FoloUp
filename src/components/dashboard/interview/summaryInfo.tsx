@@ -71,12 +71,15 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
         response.analytics?.soft_skill_summary ??
         response.details?.call_analysis?.call_summary;
 
+      const isQuotaExceeded = response.analytics?.redFlags?.includes("API quota exceeded");
+
       return {
         call_id: response.call_id,
         name: response.name || "Anonymous",
         overallScore: response.analytics?.overallScore || 0,
         communicationScore: response.analytics?.communication?.score || 0,
-        callSummary: analyticsSummary?.trim() || "No summary available",
+        callSummary: analyticsSummary?.trim() ||
+          (isQuotaExceeded ? "Analytics temporarily unavailable due to API quota limits" : "No summary available"),
       };
     });
   };

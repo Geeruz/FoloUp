@@ -3,7 +3,7 @@ import { SYSTEM_PROMPT, createUserPrompt } from "@/lib/prompts/generate-insights
 import { InterviewService } from "@/services/interviews.service";
 import { ResponseService } from "@/services/responses.service";
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { OpenAI } from "openai";
 
 export async function POST(req: Request) {
   logger.info("generate-insights request received");
@@ -19,11 +19,9 @@ export async function POST(req: Request) {
     }
   }
 
-  const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-
-  const model = genai.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    systemInstruction: SYSTEM_PROMPT,
+  const client = new OpenAI({
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: "https://api.deepseek.com",
   });
 
   try {
@@ -34,26 +32,31 @@ export async function POST(req: Request) {
       interview.description,
     );
 
-    const result = await model.generateContent({
-      contents: [
+    const result = await client.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: SYSTEM_PROMPT,
+        },
         {
           role: "user",
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
+          content: prompt,
         },
       ],
-      generationConfig: {
-        responseMimeType: "application/json",
-      },
+      model: "deepseek-chat",
+      temperature: 0.1,
+      max_tokens: 2048,
+      response_format: { type: "json_object" },
     });
 
-    const content = result.response.text();
-    const match = content.match(/\{[\s\S]*\}/);
-    const cleanContent = match ? match[0] : content;
-    const insightsResponse = JSON.parse(cleanContent);
+    const content = result.choices[0]?.message?.content || "";
+    console.log("Groq insights raw response:", content);
+
+    if (!content.trim()) {
+      throw new Error("Empty response from Groq API");
+    }
+
+    const insightsResponse = JSON.parse(content);
 
     await InterviewService.updateInterview(
       { insights: insightsResponse.insights },

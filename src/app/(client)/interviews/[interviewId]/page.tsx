@@ -22,6 +22,7 @@ import { CandidateStatus } from "@/lib/enum";
 import { formatTimestampToDateHHMM } from "@/lib/utils";
 import { ClientService } from "@/services/clients.service";
 import { InterviewService } from "@/services/interviews.service";
+import axios from "axios";
 import { ResponseService } from "@/services/responses.service";
 import type { Interview } from "@/types/interview";
 import type { Response } from "@/types/response";
@@ -57,6 +58,7 @@ function InterviewHome({ params, searchParams }: Props) {
   const [isGeneratingInsights, setIsGeneratingInsights] = useState<boolean>(false);
   const [isViewed, setIsViewed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState<boolean>(false);
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
   const [themeColor, setThemeColor] = useState<string>("#4F46E5");
   const [iconColor, seticonColor] = useState<string>("#4F46E5");
@@ -117,9 +119,24 @@ function InterviewHome({ params, searchParams }: Props) {
   useEffect(() => {
     const fetchResponses = async () => {
       try {
+        setLoading(true);
         const response = await ResponseService.getAllResponses(resolvedParams.interviewId);
         setResponses(response);
-        setLoading(true);
+
+        const pendingAnalytics = response.filter((item) => !item.is_analysed);
+        if (pendingAnalytics.length > 0) {
+          setIsGeneratingAnalysis(true);
+          for (const item of pendingAnalytics) {
+            try {
+              await axios.post("/api/get-call", { id: item.call_id });
+            } catch (error) {
+              console.error("Failed to generate analytics for call", item.call_id, error);
+            }
+          }
+          const refreshedResponses = await ResponseService.getAllResponses(resolvedParams.interviewId);
+          setResponses(refreshedResponses);
+          setIsGeneratingAnalysis(false);
+        }
       } catch (error) {
         console.error(error);
       } finally {
