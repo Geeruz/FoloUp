@@ -10,8 +10,8 @@ export async function POST(req: Request) {
   const body = await req.json();
 
   const client = new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: "https://api.deepseek.com",
+    apiKey: process.env.SARVAM_API_KEY,
+    baseURL: "https://api.sarvam.ai/v1",
   });
 
   try {
@@ -26,17 +26,17 @@ export async function POST(req: Request) {
           content: generateQuestionsPrompt(body),
         },
       ],
-      model: "deepseek-chat",
+      model: "sarvam-105b",
       temperature: 0.3,
       max_tokens: 2048,
       response_format: { type: "json_object" },
     });
 
     const content = result.choices[0]?.message?.content || "";
-    console.log("DeepSeek interview questions raw response:", content);
+    console.log("Sarvam interview questions raw response:", content);
 
     if (!content.trim()) {
-      throw new Error("Empty response from DeepSeek API");
+      throw new Error("Empty response from Sarvam API");
     }
 
     logger.info("Interview questions generated successfully");

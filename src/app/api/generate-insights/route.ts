@@ -20,8 +20,8 @@ export async function POST(req: Request) {
   }
 
   const client = new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: "https://api.deepseek.com",
+    apiKey: process.env.SARVAM_API_KEY,
+    baseURL: "https://api.sarvam.ai/v1",
   });
 
   try {
@@ -43,20 +43,28 @@ export async function POST(req: Request) {
           content: prompt,
         },
       ],
-      model: "deepseek-chat",
+      model: "sarvam-105b",
       temperature: 0.1,
       max_tokens: 2048,
       response_format: { type: "json_object" },
     });
 
     const content = result.choices[0]?.message?.content || "";
-    console.log("Groq insights raw response:", content);
+    console.log("Sarvam insights raw response:", content);
 
     if (!content.trim()) {
-      throw new Error("Empty response from Groq API");
+      throw new Error("Empty response from Sarvam API");
     }
 
-    const insightsResponse = JSON.parse(content);
+    // Clean markdown code block formatting if present
+    let cleanContent = content.trim();
+    if (cleanContent.startsWith('```json')) {
+      cleanContent = cleanContent.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    } else if (cleanContent.startsWith('```')) {
+      cleanContent = cleanContent.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    }
+
+    const insightsResponse = JSON.parse(cleanContent);
 
     await InterviewService.updateInterview(
       { insights: insightsResponse.insights },

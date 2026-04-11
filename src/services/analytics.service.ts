@@ -29,16 +29,23 @@ export const generateInterviewAnalytics = async (payload: {
     const baseTranscript = transcript || response.details?.transcript || "";
     
     const interviewTranscript = `--- HR Round Answers ---\n${hrTranscriptsStr || "None"}\n\n--- Evaluation Round Answers ---\n${evalTranscriptsStr || "None"}\n\n--- On Call Round Conversation ---\n${baseTranscript}`;
+    
+    // Limit transcript length to reduce token usage (approx 2500 tokens max for input)
+    const maxTranscriptLength = 10000;
+    const truncatedTranscript = interviewTranscript.length > maxTranscriptLength 
+      ? interviewTranscript.substring(0, maxTranscriptLength) + "\n\n[Transcript truncated for length...]"
+      : interviewTranscript;
+    
     const mainInterviewQuestions = questions
       .map((q: Question, index: number) => `${index + 1}. ${q.question}`)
       .join("\n");
 
     const client = new OpenAI({
-      apiKey: process.env.DEEPSEEK_API_KEY,
-      baseURL: "https://api.deepseek.com",
+      apiKey: process.env.SARVAM_API_KEY,
+      baseURL: "https://api.sarvam.ai/v1",
     });
 
-    const prompt = getInterviewAnalyticsPrompt(interviewTranscript, mainInterviewQuestions);
+    const prompt = getInterviewAnalyticsPrompt(truncatedTranscript, mainInterviewQuestions);
 
     const result = await client.chat.completions.create({
       messages: [
@@ -51,20 +58,28 @@ export const generateInterviewAnalytics = async (payload: {
           content: prompt,
         },
       ],
-      model: "deepseek-chat",
+      model: "sarvam-105b",
       temperature: 0.1,
-      max_tokens: 4096,
+      max_tokens: 2048,
       response_format: { type: "json_object" },
     });
 
     const content = result.choices[0]?.message?.content || "";
-    console.log("DeepSeek analytics raw response:", content);
+    console.log("Sarvam analytics raw response:", content);
 
     if (!content.trim()) {
-      throw new Error("Empty response from DeepSeek API");
+      throw new Error("Empty response from Sarvam API");
     }
 
-    const analyticsResponse = JSON.parse(content);
+    // Clean markdown code block formatting if present
+    let cleanContent = content.trim();
+    if (cleanContent.startsWith('```json')) {
+      cleanContent = cleanContent.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    } else if (cleanContent.startsWith('```')) {
+      cleanContent = cleanContent.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    }
+
+    const analyticsResponse = JSON.parse(cleanContent);
 
     if (!analyticsResponse.softSkillSummary) {
       console.warn("Analytics response missing softSkillSummary field", analyticsResponse);
@@ -74,11 +89,11 @@ export const generateInterviewAnalytics = async (payload: {
 
     return { analytics: analyticsResponse, status: 200 };
   } catch (error: any) {
-    console.error("Error in DeepSeek request:", error);
+    console.error("Error in Sarvam request:", error);
 
     // Check if it's a quota exceeded error
     if (error?.status === 429 || error?.message?.includes("quota") || error?.message?.includes("429")) {
-      console.warn("DeepSeek API quota exceeded - falling back to basic analytics");
+      console.warn("Sarvam API quota exceeded - falling back to basic analytics");
 
       // Return basic analytics structure when quota is exceeded
       const fallbackAnalytics = {

@@ -18,8 +18,8 @@ export async function POST(req: Request) {
     }
 
     const client = new OpenAI({
-      apiKey: process.env.DEEPSEEK_API_KEY,
-      baseURL: "https://api.deepseek.com",
+      apiKey: process.env.SARVAM_API_KEY,
+      baseURL: "https://api.sarvam.ai/v1",
     });
 
     const result = await client.chat.completions.create({
@@ -33,22 +33,30 @@ export async function POST(req: Request) {
           content: getCommunicationAnalysisPrompt(transcript),
         },
       ],
-      model: "deepseek-chat",
+      model: "sarvam-105b",
       temperature: 0.1,
       max_tokens: 2048,
       response_format: { type: "json_object" },
     });
 
     const analysis = result.choices[0]?.message?.content || "";
-    console.log("DeepSeek communication analysis raw response:", analysis);
+    console.log("Sarvam communication analysis raw response:", analysis);
 
     if (!analysis.trim()) {
-      throw new Error("Empty response from DeepSeek API");
+      throw new Error("Empty response from Sarvam API");
+    }
+
+    // Clean markdown code block formatting if present
+    let cleanAnalysis = analysis.trim();
+    if (cleanAnalysis.startsWith('```json')) {
+      cleanAnalysis = cleanAnalysis.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    } else if (cleanAnalysis.startsWith('```')) {
+      cleanAnalysis = cleanAnalysis.replace(/^```\s*/, '').replace(/\s*```$/, '');
     }
 
     logger.info("Communication analysis completed successfully");
 
-    return NextResponse.json({ analysis: JSON.parse(analysis) }, { status: 200 });
+    return NextResponse.json({ analysis: JSON.parse(cleanAnalysis) }, { status: 200 });
   } catch (error) {
     logger.error("Error analyzing communication skills", String(error));
     console.error("Analysis error details:", error);
