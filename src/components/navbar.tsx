@@ -8,10 +8,10 @@ function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6">
         <Link href="/dashboard" className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-gradient-to-br from-sky-500 to-violet-500 text-white shadow-lg shadow-sky-500/20">
-            <span className="text-lg font-bold">F</span>
+            <span className="text-lg font-bold">P</span>
           </div>
           <div>
-            <p className="text-xl font-semibold text-slate-950">FoloUp</p>
+            <p className="text-xl font-semibold text-slate-950">Provly</p>
             <p className="text-sm text-slate-500">Talent intelligence studio</p>
           </div>
         </Link>
