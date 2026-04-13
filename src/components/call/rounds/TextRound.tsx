@@ -3,7 +3,7 @@
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import type { Question } from "@/types/interview";
 import { MicIcon, MicOffIcon, ArrowRightIcon, RotateCcwIcon } from "lucide-react";
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "../../ui/button";
 
 export interface TextRoundTranscript {
@@ -52,6 +52,12 @@ export default function TextRound({
     startListening();
     setQuestionState("recording");
   }, [resetTranscript, startListening]);
+
+  useEffect(() => {
+    if (isSupported && questionState === "ready" && !isListening) {
+      handleStartRecording();
+    }
+  }, [isSupported, questionState, isListening, handleStartRecording]);
 
   const handleStopRecording = useCallback(() => {
     stopListening();
@@ -164,8 +170,8 @@ export default function TextRound({
         >
           {questionState === "ready" && (
             <p className="text-gray-400 text-sm italic">
-              Click the microphone button below to start recording your
-              answer...
+              Recording will start automatically. Please speak your answer when
+              prompted.
             </p>
           )}
           {questionState === "recording" && (
