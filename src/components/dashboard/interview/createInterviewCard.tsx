@@ -12,25 +12,18 @@ function CreateInterviewCard() {
   return (
     <>
       <Card
-        className=" flex items-center border-dashed border-gray-700 border-2 cursor-pointer hover:scale-105 ease-in-out duration-300 h-60 w-56 ml-1 mr-3 mt-4 rounded-xl shrink-0 overflow-hidden shadow-md"
-        onClick={() => {
-          setOpen(true);
-        }}
+        className="flex h-72 w-full cursor-pointer flex-col items-center justify-center rounded-[1.75rem] border border-dashed border-slate-300 bg-slate-50 p-6 text-slate-700 transition hover:-translate-y-1 hover:shadow-xl"
+        onClick={() => setOpen(true)}
       >
-        <CardContent className="flex items-center flex-col mx-auto">
-          <div className="flex flex-col justify-center items-center w-full overflow-hidden">
-            <Plus size={90} strokeWidth={0.5} className="text-gray-700" />
-          </div>
-          <CardTitle className="p-0 text-md text-center">Create an Interview</CardTitle>
-        </CardContent>
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-sky-100 text-sky-600 shadow-md">
+          <Plus size={36} />
+        </div>
+        <CardTitle className="text-lg font-semibold text-slate-950 text-center">Create a new interview</CardTitle>
+        <p className="mt-3 text-sm leading-6 text-slate-500 text-center">
+          Start a fresh interview workflow with candidate questions and evaluation rounds.
+        </p>
       </Card>
-      <Modal
-        open={open}
-        closeOnOutsideClick={false}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
+      <Modal open={open} closeOnOutsideClick={false} onClose={() => setOpen(false)}>
         <CreateInterviewModal open={open} setOpen={setOpen} />
       </Modal>
     </>

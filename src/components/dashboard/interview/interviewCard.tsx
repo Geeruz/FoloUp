@@ -26,17 +26,14 @@ function InterviewCard({ name, interviewerId, id, url, readableSlug }: Props) {
   const [isFetching, setIsFetching] = useState(false);
   const [img, setImg] = useState("");
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchInterviewer = async () => {
       const interviewer = await InterviewerService.getInterviewer(interviewerId);
       setImg(interviewer.image);
     };
     fetchInterviewer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [interviewerId]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetchResponses = async () => {
       try {
@@ -70,8 +67,7 @@ function InterviewCard({ name, interviewerId, id, url, readableSlug }: Props) {
     };
 
     fetchResponses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const copyToClipboard = () => {
     navigator.clipboard
@@ -79,16 +75,14 @@ function InterviewCard({ name, interviewerId, id, url, readableSlug }: Props) {
       .then(
         () => {
           setCopied(true);
-          toast.success("The link to your interview has been copied to your clipboard.", {
+          toast.success("Interview link copied.", {
             position: "bottom-right",
             duration: 3000,
           });
-          setTimeout(() => {
-            setCopied(false);
-          }, 2000);
+          setTimeout(() => setCopied(false), 2000);
         },
         (err) => {
-          console.log("failed to copy", err.mesage);
+          console.log("failed to copy", err.message);
         },
       );
   };
@@ -107,54 +101,56 @@ function InterviewCard({ name, interviewerId, id, url, readableSlug }: Props) {
         pointerEvents: isFetching ? "none" : "auto",
         cursor: isFetching ? "default" : "pointer",
       }}
+      className="relative"
     >
-      <Card className="relative p-0 mt-4 inline-block cursor-pointer h-60 w-56 ml-1 mr-3 rounded-xl shrink-0 overflow-hidden shadow-md">
-        <CardContent className={`p-0 ${isFetching ? "opacity-60" : ""}`}>
-          <div className="w-full h-40 overflow-hidden bg-indigo-600 flex items-center text-center">
-            <CardTitle className="w-full mt-3 mx-2 text-white text-lg">
-              {name}
-              {isFetching && (
-                <div className="z-100 mt-[-5px]">
-                  <MiniLoader />
-                </div>
-              )}
-            </CardTitle>
-          </div>
-          <div className="flex flex-row items-center mx-4 ">
-            <div className="w-full overflow-hidden">
-              <Image
-                src={img}
-                alt="Picture of the interviewer"
-                width={70}
-                height={70}
-                className="object-cover object-center"
-              />
-            </div>
-            <div className="text-black text-sm font-semibold mt-2 mr-2 whitespace-nowrap">
-              Responses: <span className="font-normal">{responseCount?.toString() || 0}</span>
+      <Card className="group h-72 w-full overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white text-slate-950 transition hover:-translate-y-1 hover:shadow-xl">
+        <CardContent className={isFetching ? "opacity-60" : ""}>
+          <div className="flex h-32 items-end rounded-[1.5rem] bg-gradient-to-br from-sky-500 to-indigo-600 p-5 text-white">
+            <div>
+              <p className="text-lg font-semibold">{name}</p>
+              <p className="mt-2 text-sm text-slate-200">Interview campaign</p>
             </div>
           </div>
-          <div className="absolute top-2 right-2 flex gap-1">
-            <Button
-              className="text-xs text-indigo-600 px-1 h-6"
-              variant={"secondary"}
-              onClick={handleJumpToInterview}
-            >
-              <ArrowUpRight size={16} />
-            </Button>
-            <Button
-              className={`text-xs text-indigo-600 px-1 h-6  ${
-                copied ? "bg-indigo-300 text-white" : ""
-              }`}
-              variant={"secondary"}
-              onClick={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
-                copyToClipboard();
-              }}
-            >
-              {copied ? <CopyCheck size={16} /> : <Copy size={16} />}
-            </Button>
+          <div className="mt-5 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-14 w-14 overflow-hidden rounded-3xl bg-slate-100">
+                {img ? (
+                  <Image
+                    src={img}
+                    alt="Interviewer"
+                    width={56}
+                    height={56}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-slate-400">?</div>
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">Responses</p>
+                <p className="text-2xl font-semibold text-slate-950">{responseCount ?? 0}</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                className="h-11 rounded-full px-4 text-sm"
+                variant="outline"
+                onClick={handleJumpToInterview}
+              >
+                <ArrowUpRight size={16} />
+              </Button>
+              <Button
+                className={`h-11 rounded-full px-4 text-sm ${copied ? "bg-slate-800 text-white" : ""}`}
+                variant="outline"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  copyToClipboard();
+                }}
+              >
+                {copied ? <CopyCheck size={16} /> : <Copy size={16} />}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -160,9 +160,9 @@ export default function InterviewFlow({
   );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col flex-1">
       {/* Stepper */}
-      <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm">
+      <div className="border-b border-slate-200 bg-white sticky top-0 z-10 shadow-sm">
         <RoundStepper
           currentRound={currentRound}
           completedRounds={completedRounds}
@@ -172,16 +172,16 @@ export default function InterviewFlow({
 
       {/* Transition overlay */}
       {isTransitioning && transitionData && (
-        <div className="flex-1 flex flex-col items-center justify-center py-20">
+        <div className="flex-1 flex flex-col items-center justify-center py-20 bg-slate-50">
           <div
-            className="w-20 h-20 rounded-full flex items-center justify-center text-4xl mb-6 shadow-xl animate-bounce"
+            className="w-20 h-20 rounded-full flex items-center justify-center text-4xl mb-6 shadow-lg animate-bounce"
             style={{
               backgroundColor: `${interview.theme_color || "#4F46E5"}15`,
             }}
           >
             {transitionData.icon}
           </div>
-          <p className="text-xl font-bold text-gray-800 mb-2">
+          <p className="text-xl font-bold text-slate-900 mb-2">
             {transitionData.message}
           </p>
           <div className="flex gap-1 mt-4">
@@ -212,7 +212,7 @@ export default function InterviewFlow({
 
       {/* Round content */}
       {!isTransitioning && (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto bg-slate-50 px-4 py-6">
           {currentRound === "hr" && (
             <TextRound
               roundLabel="HR Round"

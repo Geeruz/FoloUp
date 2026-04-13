@@ -4,17 +4,22 @@ import React from "react";
 
 function Navbar() {
   return (
-    <div className="fixed inset-x-0 top-0 bg-slate-100  z-[10] h-fit  py-4 ">
-      <div className="flex items-center justify-between h-full gap-2 px-8 mx-auto">
-        <div className="flex flex-row gap-3 justify-center">
-          <Link href={"/dashboard"} className="flex items-center gap-2">
-            <p className="px-2 py-1 text-2xl font-bold text-black">
-              Provly{" "}
-              <span className="text-[8px]">Beta</span>
-            </p>
-          </Link>
-          <p className="my-auto text-xl">/</p>
-          <div className="my-auto">
+    <div className="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur-xl py-5 shadow-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-gradient-to-br from-sky-500 to-violet-500 text-white shadow-lg shadow-sky-500/20">
+            <span className="text-lg font-bold">F</span>
+          </div>
+          <div>
+            <p className="text-xl font-semibold text-slate-950">FoloUp</p>
+            <p className="text-sm text-slate-500">Talent intelligence studio</p>
+          </div>
+        </Link>
+        <div className="flex items-center gap-3">
+          <div className="hidden rounded-full bg-slate-100 px-4 py-2 text-sm text-slate-600 md:block">
+            Organize interviews with confidence
+          </div>
+          <div className="rounded-full bg-slate-100 p-1 shadow-sm">
             <OrganizationSwitcher
               afterCreateOrganizationUrl="/dashboard"
               hidePersonal={true}
@@ -27,9 +32,9 @@ function Navbar() {
               }}
             />
           </div>
-        </div>
-        <div className="flex items-center">
-          <UserButton afterSignOutUrl="/sign-in" signInUrl="/sign-in" />
+          <div className="rounded-full bg-slate-100 p-1 shadow-sm">
+            <UserButton afterSignOutUrl="/sign-in" signInUrl="/sign-in" />
+          </div>
         </div>
       </div>
     </div>

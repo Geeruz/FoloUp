@@ -9,34 +9,47 @@ function SideMenu() {
   const router = useRouter();
 
   return (
-    <div className="z-[10] bg-slate-100 p-6 w-[200px] fixed top-[64px] left-0 h-full">
-      <div className="flex flex-col gap-1">
-        <div className="flex flex-col justify-between gap-2">
+    <aside className="fixed left-0 top-[80px] z-20 h-[calc(100vh-80px)] w-[240px] border-r border-slate-200/70 bg-white/95 px-4 py-6 backdrop-blur-xl">
+      <div className="flex h-full flex-col justify-between gap-6">
+        <div className="space-y-6">
+          <div className="rounded-[1.75rem] bg-slate-50 px-4 py-4 shadow-sm">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Workspace</p>
+            <p className="mt-3 text-sm font-semibold text-slate-900">Hiring operations</p>
+          </div>
+
           <button
             type="button"
-            className={`flex flex-row p-3 rounded-md hover:bg-slate-200 cursor-pointer ${
+            className={`flex w-full items-center gap-3 rounded-[1.5rem] px-4 py-3 text-left text-sm font-semibold transition ${
               pathname.endsWith("/dashboard") || pathname.includes("/interviews")
-                ? "bg-indigo-200"
-                : "bg-slate-100"
+                ? "bg-sky-500 text-white shadow-lg"
+                : "text-slate-700 hover:bg-slate-100"
             }`}
             onClick={() => router.push("/dashboard")}
           >
-            <PlayCircleIcon className="font-thin	 mr-2" />
-            <p className="font-medium ">Interviews</p>
+            <PlayCircleIcon className="h-5 w-5" />
+            <span>Interviews</span>
           </button>
+
           <button
             type="button"
-            className={`flex flex-row p-3 rounded-md hover:bg-slate-200 cursor-pointer ${
-              pathname.endsWith("/interviewers") ? "bg-indigo-200" : "bg-slate-100"
+            className={`flex w-full items-center gap-3 rounded-[1.5rem] px-4 py-3 text-left text-sm font-semibold transition ${
+              pathname.endsWith("/interviewers")
+                ? "bg-sky-500 text-white shadow-lg"
+                : "text-slate-700 hover:bg-slate-100"
             }`}
             onClick={() => router.push("/dashboard/interviewers")}
           >
-            <SpeechIcon className="font-thin mr-2" />
-            <p className="font-medium ">Interviewers</p>
+            <SpeechIcon className="h-5 w-5" />
+            <span>Interviewers</span>
           </button>
         </div>
+
+        <div className="rounded-[1.75rem] bg-slate-50 p-4 text-sm text-slate-600 shadow-sm">
+          <p className="font-semibold text-slate-900">Focus</p>
+          <p className="mt-2 text-xs leading-6">Review interviews, manage talent, and keep your hiring workflow efficient.</p>
+        </div>
       </div>
-    </div>
+    </aside>
   );
 }
 

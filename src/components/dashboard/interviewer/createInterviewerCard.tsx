@@ -53,159 +53,115 @@ const createInterviewerCard = () => {
 
   return (
     <>
-      {/* <Card
-        
-        className="border-dashed border-gray-700 border-4 p-0 inline-block cursor-pointer hover:scale-105 ease-in-out duration-300 h-5 w-5 ml-1 mr-3 rounded-xl shrink-0 overflow-hidden shadow-md"
-      >
-        <CardContent className="p-0">
-          <div className="flex flex-col justify-center items-center w-full p-4 pb-0 mt-8 overflow-hidden">
-            
-          </div>
-          {/* <CardTitle className="p-0 m-2 mx-0 text-xs text-center">
-            Add Interviewer
-          </CardTitle> 
-        </CardContent>
-      </Card> */}
-      <Plus
-        size={30}
-        strokeWidth={2}
-        className="cursor-pointer bg-indigo-600 rounded-full text-white"
-        onClick={() => setOpen(true)}
-      />
-      <Modal
-        open={open}
-        closeOnOutsideClick={true}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <div className="text-center w-[35rem]">
-          <CardTitle className="text-2xl text mt-0 mb-4 p-0 font-semibold ">
-            Create an interviewer yourself!
-          </CardTitle>
-          <div className="mt-3 p-2 flex flex-row justify-center space-x-10 items-center">
+      <div className="flex h-72 w-full cursor-pointer flex-col items-center justify-center rounded-[1.75rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl">
+        <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-sky-100 text-sky-700 shadow-sm">
+          <Plus size={32} />
+        </div>
+        <CardTitle className="text-lg font-semibold">Add a new interviewer</CardTitle>
+        <p className="mt-2 text-sm leading-6 text-slate-500 text-center">
+          Create a custom interviewer profile for tailored evaluation conversations.
+        </p>
+        <Button className="mt-6 rounded-full px-6 py-3" onClick={() => setOpen(true)}>
+          Add interviewer
+        </Button>
+      </div>
+
+      <Modal open={open} closeOnOutsideClick={true} onClose={() => setOpen(false)}>
+        <div className="text-center w-[40rem] rounded-[1.75rem] bg-slate-950 p-8 text-white shadow-2xl">
+          <CardTitle className="text-3xl font-semibold leading-tight text-white">Design your interviewer</CardTitle>
+          <p className="mt-2 text-sm text-slate-300">
+            Configure behaviors, choose an avatar, and save a reusable interviewer persona.
+          </p>
+
+          <div className="mt-8 flex gap-10">
             <button
               type="button"
-              className="flex flex-col items-center justify-center overflow-hidden border-4 border-gray-500 rounded-xl h-56 w-52"
+              className="flex h-56 w-52 flex-col items-center justify-center overflow-hidden rounded-[1.5rem] border border-slate-700 bg-slate-900 text-slate-200 transition hover:border-sky-400"
               onClick={() => setGallery(true)}
             >
               {image ? (
                 <Image
                   src={image}
-                  alt="Picture of the interviewer"
+                  alt="Interviewer avatar"
                   width={200}
-                  height={40}
-                  className="w-full h-full object-cover object-center"
+                  height={200}
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <div>
-                  <LucideImage className="mt-3 text-gray-300" size={100} strokeWidth={0.7} />
-                  <h4 className="text-xs text-center font-medium text-gray-400">
-                    Choose an Avatar
-                  </h4>
-                </div>
+                <>
+                  <LucideImage className="text-slate-500" size={80} strokeWidth={1.2} />
+                  <span className="mt-4 text-sm font-medium text-slate-300">Choose an avatar</span>
+                </>
               )}
             </button>
-            <div className="flex flex-col justify-center items-start ml-4">
-              <div className="flex flex-row justify-center items-center">
-                <h3 className="text-lg font-medium">Name</h3>
+
+            <div className="flex-1 space-y-6 text-left">
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-slate-300">Interviewer name</label>
                 <input
                   type="text"
-                  className="border-b-2 focus:outline-none border-gray-500 px-2 py-0.5 ml-3 w-[12.5rem]"
+                  className="w-full rounded-3xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 outline-none focus:border-sky-400"
                   placeholder="e.g. Empathetic Bob"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <h3 className="text-lg mt-3 font-medium">Interviewer Settings</h3>
-              <div className="ml-5 mt-2 flex flex-col justify-start items-start">
-                <div className="flex flex-row justify-between items-center mb-2">
-                  <h4 className="w-20 text-left">Empathy</h4>
-                  <div className="w-40 space-x-3 ml-3 flex justify-between items-center">
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[
+                  { label: "Empathy", value: empathy, setter: setEmpathy },
+                  { label: "Rapport", value: rapport, setter: setRapport },
+                  { label: "Exploration", value: exploration, setter: setExploration },
+                  { label: "Speed", value: speed, setter: setSpeed },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-3xl border border-slate-800 bg-slate-900 p-4">
+                    <div className="mb-3 flex items-center justify-between text-sm text-slate-400">
+                      <span>{item.label}</span>
+                      <span>{item.value.toFixed(1)}</span>
+                    </div>
                     <Slider
-                      value={[empathy]}
+                      value={[item.value]}
                       max={1}
                       step={0.1}
-                      onValueChange={(value) => setEmpathy(value[0])}
+                      onValueChange={(value) => item.setter(value[0])}
                     />
-                    <span className="w-8 text-left">{empathy}</span>
                   </div>
-                </div>
-                <div className="flex flex-row justify-between items-center mb-2">
-                  <h4 className="w-20 text-left">Rapport</h4>
-                  <div className="w-40 space-x-3 ml-3 flex justify-between items-center">
-                    <Slider
-                      value={[rapport]}
-                      max={1}
-                      step={0.1}
-                      onValueChange={(value) => setRapport(value[0])}
-                    />
-                    <span className="w-8 text-left">{rapport}</span>
-                  </div>
-                </div>
-                <div className="flex flex-row justify-between items-center mb-2">
-                  <h4 className="w-20 text-left">Exploration</h4>
-                  <div className="w-40 space-x-3 ml-3 flex justify-between items-center">
-                    <Slider
-                      value={[exploration]}
-                      max={1}
-                      step={0.1}
-                      onValueChange={(value) => setExploration(value[0])}
-                    />
-                    <span className="w-8 text-left">{exploration}</span>
-                  </div>
-                </div>
-                <div className="flex flex-row justify-between items-center mb-2">
-                  <h4 className="w-20 text-left">Speed</h4>
-                  <div className="w-40 space-x-3 ml-3 flex justify-between items-center">
-                    <Slider
-                      value={[speed]}
-                      max={1}
-                      step={0.1}
-                      onValueChange={(value) => setSpeed(value[0])}
-                    />
-                    <span className="w-8 text-left">{speed}</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="flex flex-row justify-end mr-4">
+
+          <div className="mt-8 flex justify-end">
             <Button
               disabled={!(name && image) || isClicked}
-              className="bg-indigo-600  hover:bg-indigo-800"
+              className="rounded-full bg-sky-500 px-8 py-3 text-white shadow-lg shadow-sky-500/20 hover:bg-sky-400"
               onClick={() => {
                 setIsClicked(true);
                 onSave();
               }}
             >
-              Save
+              Save interviewer
             </Button>
           </div>
         </div>
       </Modal>
-      <Modal
-        open={gallery}
-        closeOnOutsideClick={true}
-        onClose={() => {
-          setGallery(false);
-        }}
-      >
-        <div className="text-left w-[20rem]">
-          <CardTitle className="text-xl text mt-0 p-0 font-semibold ">Select an Avatar</CardTitle>
-          <ScrollArea className="mt-3 h-96">
-            <div className="flex flex-row flex-wrap justify-center items-center">
+
+      <Modal open={gallery} closeOnOutsideClick={true} onClose={() => setGallery(false)}>
+        <div className="text-left w-[24rem] rounded-[1.5rem] bg-white p-6 shadow-2xl">
+          <CardTitle className="text-2xl font-semibold text-slate-900">Select an avatar</CardTitle>
+          <ScrollArea className="mt-4 h-96 rounded-3xl border border-slate-200 p-3">
+            <div className="grid grid-cols-2 gap-3">
               {avatars.map((item) => (
                 <button
                   type="button"
                   key={item.id}
-                  className="flex flex-col items-center justify-center border-2 border-gray-500 rounded-xl overflow-hidden m-2 cursor-pointer"
+                  className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:border-sky-500"
                   onClick={() => {
                     setImage(item.img);
                     setGallery(false);
                   }}
                 >
-                  <Image alt="avatar" width={125} height={100} src={item.img} />
+                  <Image alt="avatar" width={160} height={160} src={item.img} className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
