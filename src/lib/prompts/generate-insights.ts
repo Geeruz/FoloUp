@@ -1,25 +1,23 @@
-export const SYSTEM_PROMPT =
-  "You are an expert in uncovering deeper insights from interview question and answer sets.";
+export const SYSTEM_PROMPT = "Role: Expert at extracting insights from interview summaries.";
 
 export const createUserPrompt = (
   callSummaries: string,
   interviewName: string,
   interviewObjective: string,
   interviewDescription: string,
-) => {
-  return `Imagine you are an interviewer who is an expert in uncovering deeper insights from call summaries.
-    Use the list of call summaries and the interview details below to generate insights.
-    
-    ###
-    Call Summaries: ${callSummaries}
+) => `Extract 3 key insights from these call summaries focusing on user feedback.
 
-    ###
-    Interview Title: ${interviewName}
-    Interview Objective: ${interviewObjective}
-    Interview Description: ${interviewDescription}
+Summaries: ${callSummaries}
+Interview: ${interviewName}
+Objective: ${interviewObjective}
+Description: ${interviewDescription}
 
-    Give 3 insights from the call summaries that highlights user feedback. Only output the insights. Do not include user names in the insights.
-    Make sure each insight is 25 words or less.
-    
-    Output the answer in JSON format with the key "insights" with an array on 3 insights as the value.`;
-};
+Rules:
+- Exactly 3 insights.
+- Max 25 words per insight.
+- No user names.
+
+Return exactly this JSON:
+{
+  "insights": [string]
+}`;
