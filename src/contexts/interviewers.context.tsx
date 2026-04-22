@@ -34,7 +34,10 @@ export function InterviewerProvider({ children }: InterviewerProviderProps) {
     try {
       setInterviewersLoading(true);
       const response = await InterviewerService.getAllInterviewers(user?.id as string);
-      setInterviewers(response);
+      const uniqueInterviewers = response.filter((interviewer, index, self) =>
+        index === self.findIndex((t) => t.name === interviewer.name)
+      );
+      setInterviewers(uniqueInterviewers);
     } catch (error) {
       console.error(error);
     }
