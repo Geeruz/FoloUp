@@ -254,13 +254,13 @@ function Call({ interview }: InterviewProps) {
                   <div className="space-y-4 text-sm leading-7 text-slate-600">
                     <p>{interview?.description}</p>
                     <div className="rounded-3xl border border-sky-200 bg-sky-50 p-5 text-slate-700 shadow-sm">
-                      <p className="font-semibold text-slate-900">Interview structure</p>
+                      <p className="font-semibold text-slate-900">Interview Format</p>
                       <ul className="mt-3 space-y-2 text-sm text-slate-600">
                         <li>• HR Round — Text-based questions</li>
                         <li>• Evaluation Round — Technical assessment</li>
                         <li>• On Call Round — Live AI conversation</li>
                       </ul>
-                      <p className="mt-4 text-slate-500">Tab switching is recorded automatically.</p>
+                      <p className="mt-4 text-slate-500">Note: Tab switching is monitored during the session.</p>
                     </div>
                   </div>
 
@@ -307,7 +307,7 @@ function Call({ interview }: InterviewProps) {
                       {!Loading ? "Start Interview" : <MiniLoader />}
                     </Button>
                     <AlertDialog>
-                      <AlertDialogTrigger>
+                      <AlertDialogTrigger asChild>
                         <Button
                           variant="outline"
                           className="min-w-[8rem] rounded-2xl px-6 text-slate-900 border-slate-300 hover:bg-slate-50"
@@ -375,13 +375,15 @@ function Call({ interview }: InterviewProps) {
                       open={isDialogOpen}
                       onOpenChange={setIsDialogOpen}
                     >
-                      <AlertDialogTrigger className="w-full flex justify-center">
-                        <Button
-                          className="bg-sky-600 text-white h-10 mt-4 hover:bg-sky-700"
-                          onClick={() => setIsDialogOpen(true)}
-                        >
-                          Provide Feedback
-                        </Button>
+                      <AlertDialogTrigger asChild>
+                        <div className="w-full flex justify-center mt-4">
+                          <Button
+                            className="bg-sky-600 text-white h-10 hover:bg-sky-700"
+                            onClick={() => setIsDialogOpen(true)}
+                          >
+                            Provide Feedback
+                          </Button>
+                        </div>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <FeedbackForm
@@ -402,8 +404,8 @@ function Call({ interview }: InterviewProps) {
                   <div className="font-normal text-base">
                     <CheckCircleIcon className="h-12 w-12 mx-auto my-4 text-amber-600" />
                     <p className="text-lg font-semibold text-center text-slate-900">
-                      You have already responded in this interview or you
-                      are not eligible to respond. Thank you!
+                      You have already completed this interview or you
+                      are not eligible to participate. Thank you!
                     </p>
                     <p className="text-center text-slate-700 mt-3">
                       You can close this tab now.
