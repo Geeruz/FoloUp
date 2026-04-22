@@ -18,9 +18,9 @@ function CreateInterviewCard() {
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-sky-100 text-sky-600 shadow-md">
           <Plus size={36} />
         </div>
-        <CardTitle className="text-lg font-semibold text-slate-950 text-center">Create a new interview</CardTitle>
+        <CardTitle className="text-lg font-semibold text-slate-950 text-center">New Interview</CardTitle>
         <p className="mt-3 text-sm leading-6 text-slate-500 text-center">
-          Start a fresh interview workflow with candidate questions and evaluation rounds.
+          Set up a structured interview with custom questions and evaluation criteria.
         </p>
       </Card>
       <Modal open={open} closeOnOutsideClick={false} onClose={() => setOpen(false)}>

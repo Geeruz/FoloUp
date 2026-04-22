@@ -105,7 +105,7 @@ function InterviewCard({ name, interviewerId, id, url, readableSlug }: Props) {
     >
       <Card className="group h-72 w-full overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white text-slate-950 transition hover:-translate-y-1 hover:shadow-xl">
         <CardContent className={isFetching ? "opacity-60" : ""}>
-          <div className="flex h-32 items-end rounded-[1.5rem] bg-gradient-to-br from-sky-500 to-indigo-600 p-5 text-white">
+          <div className="flex h-32 items-end rounded-[1.5rem] bg-gradient-to-br from-slate-800 to-slate-950 p-5 text-white">
             <div>
               <p className="text-lg font-semibold">{name}</p>
               <p className="mt-2 text-sm text-slate-200">Interview campaign</p>

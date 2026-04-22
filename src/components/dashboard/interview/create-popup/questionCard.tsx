@@ -25,7 +25,7 @@ const questionCard = ({
 }: QuestionCardProps) => {
   return (
     <>
-      <Card className=" shadow-md mb-5 pb-3 ">
+      <Card className="border-none rounded-[2rem] mb-6 pb-4 shadow-sm bg-white overflow-hidden">
         <CardContent className="p-2 mx-5">
           <div className="flex flex-row justify-between mt-3 items-baseline ">
             <CardTitle className="text-lg">Question {questionNumber}</CardTitle>
@@ -35,8 +35,8 @@ const questionCard = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      className={`text-xs h-7  hover:bg-indigo-800  ${
-                        questionData?.follow_up_count === 1 ? "bg-indigo-600" : "opacity-50"
+                      className={`text-xs h-8 px-4 font-semibold rounded-full transition-all duration-200 ease-in-out ${
+                        questionData?.follow_up_count === 1 ? "bg-slate-900 text-white shadow-md scale-105" : "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
                       } `}
                       onClick={() =>
                         onQuestionChange(questionData.id, {
@@ -58,8 +58,8 @@ const questionCard = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      className={`text-xs h-7  hover:bg-indigo-800 ${
-                        questionData?.follow_up_count === 2 ? "bg-indigo-600" : "opacity-50"
+                      className={`text-xs h-8 px-4 font-semibold rounded-full transition-all duration-200 ease-in-out ${
+                        questionData?.follow_up_count === 2 ? "bg-slate-900 text-white shadow-md scale-105" : "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
                       } `}
                       onClick={() =>
                         onQuestionChange(questionData.id, {
@@ -81,8 +81,8 @@ const questionCard = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      className={`text-xs h-7 hover:bg-indigo-800  ${
-                        questionData?.follow_up_count === 3 ? "bg-indigo-600" : "opacity-50"
+                      className={`text-xs h-8 px-4 font-semibold rounded-full transition-all duration-200 ease-in-out ${
+                        questionData?.follow_up_count === 3 ? "bg-slate-900 text-white shadow-md scale-105" : "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
                       } `}
                       onClick={() =>
                         onQuestionChange(questionData.id, {
@@ -111,10 +111,10 @@ const questionCard = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        className={`text-xs h-6 px-3 hover:bg-indigo-800 ${
+                        className={`text-xs h-8 px-5 font-semibold rounded-full transition-all duration-200 ease-in-out ${
                           questionData?.round === round.value
-                            ? "bg-indigo-600"
-                            : "opacity-50"
+                            ? "bg-slate-900 text-white shadow-md scale-105"
+                            : "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
                         }`}
                         onClick={() =>
                           onQuestionChange(questionData.id, {
@@ -138,7 +138,7 @@ const questionCard = ({
           <div className="flex flex-row items-center">
             <textarea
               value={questionData?.question}
-              className="h-fit mt-3 pt-1 border-2 rounded-md w-full px-2 border-gray-400"
+              className="h-fit mt-4 pt-3 border border-slate-200 rounded-[1rem] w-full px-4 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all resize-y shadow-sm"
               placeholder="e.g. Can you tell me about a challenging project you've worked on?"
               rows={3}
               onChange={(e) =>
@@ -155,9 +155,9 @@ const questionCard = ({
               }
             />
             <Trash2
-              className="cursor-pointer ml-3"
-              color="red"
-              size={24}
+              className="cursor-pointer ml-4 text-slate-300 hover:text-red-500 transition-colors hover:scale-110"
+              strokeWidth={2}
+              size={22}
               onClick={() => onDelete(questionData.id)}
             />
           </div>
