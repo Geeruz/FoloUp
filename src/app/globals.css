@@ -13,79 +13,52 @@
 
   body {
     min-height: 100vh;
-    @apply bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.15),transparent_20%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.12),transparent_25%),#f8fbff] text-slate-950 antialiased;
+    @apply bg-[#FAFAFA] text-[#111111] antialiased selection:bg-[#111111] selection:text-white;
   }
 
   a {
     @apply text-inherit no-underline;
   }
-
-  ::selection {
-    background: rgba(56, 189, 248, 0.25);
-    color: #0f172a;
-  }
 }
 
 @layer base {
   :root {
-    --background: 210 55% 98%;
-    --foreground: 217 20% 12%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 7%;
 
-    --card: 214 64% 97%;
-    --card-foreground: 217 20% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 7%;
 
-    --popover: 214 64% 97%;
-    --popover-foreground: 217 20% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
 
-    --primary: 197 100% 35%;
-    --primary-foreground: 210 20% 98%;
+    --primary: 0 0% 7%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 236 70% 89%;
-    --secondary-foreground: 217 20% 16%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 7%;
 
-    --muted: 223 30% 92%;
-    --muted-foreground: 217 20% 45%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 271 76% 53%;
-    --accent-foreground: 210 20% 98%;
+    --accent: 0 0% 7%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 355 85% 57%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214 30% 90%;
-    --input: 214 30% 95%;
-    --ring: 197 100% 35%;
-    --radius: 1.5rem;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 7%;
+    --radius: 0rem; /* Cavemen don't do soft rounded corners. Sharp edges! Wait, maybe a tiny curve. Let's make it 1rem instead of 1.5rem to be slightly sharper but modern */
   }
 
-  .dark {
-    --background: 210 14% 10%;
-    --foreground: 210 20% 96%;
+  /* I will set radius to 1rem for modern minimalism, overriding the 1.5rem */
+}
 
-    --card: 210 16% 14%;
-    --card-foreground: 210 20% 96%;
-
-    --popover: 210 16% 14%;
-    --popover-foreground: 210 20% 96%;
-
-    --primary: 197 100% 35%;
-    --primary-foreground: 210 20% 98%;
-
-    --secondary: 238 39% 8%;
-    --secondary-foreground: 210 20% 96%;
-
-    --muted: 212 20% 14%;
-    --muted-foreground: 210 20% 72%;
-
-    --accent: 271 76% 53%;
-    --accent-foreground: 210 20% 98%;
-
-    --destructive: 355 85% 57%;
-    --destructive-foreground: 210 20% 98%;
-
-    --border: 214 20% 18%;
-    --input: 214 20% 18%;
-    --ring: 197 100% 35%;
+@layer base {
+  :root {
+    --radius: 1rem;
   }
 }
 
