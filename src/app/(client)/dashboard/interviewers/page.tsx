@@ -26,61 +26,39 @@ function Interviewers() {
 
   function InterviewersLoader() {
     return (
-      <>
-        <div className="flex">
-          <div className="h-40 w-36 ml-1 mr-3 flex-none animate-pulse rounded-xl bg-gray-300" />
-          <div className="h-40 w-36 ml-1 mr-3 flex-none animate-pulse rounded-xl bg-gray-300" />
-          <div className="h-40 w-36 ml-1 mr-3 flex-none animate-pulse rounded-xl bg-gray-300" />
-        </div>
-      </>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 w-full">
+        <div className="h-48 w-full animate-pulse rounded-2xl bg-slate-100" />
+        <div className="h-48 w-full animate-pulse rounded-2xl bg-slate-100" />
+        <div className="h-48 w-full animate-pulse rounded-2xl bg-slate-100" />
+        <div className="h-48 w-full animate-pulse rounded-2xl bg-slate-100" />
+      </div>
     );
   }
 
   return (
-    <main className="p-8 pt-0 ml-12 mr-auto rounded-md">
-      <div className="flex flex-col items-left">
-        <div className="flex flex-row mt-5">
-          <div>
-            <h2 className="mr-2 text-2xl font-semibold tracking-tight mt-3">Interviewers</h2>
-            <h3 className=" text-sm tracking-tight text-gray-600 font-medium ">
-              Get to know them by clicking the profile.
-            </h3>
-          </div>
+    <main className="mx-auto max-w-7xl px-4 pb-20 pt-32 text-black">
+      <section className="grid gap-12 p-4 md:p-12">
+        <div className="space-y-6">
+          <p className="text-sm font-bold uppercase tracking-[0.5em] text-black">Team</p>
+          <h1 className="text-6xl sm:text-7xl font-black tracking-tighter text-black uppercase leading-none">Interviewers</h1>
+          <p className="max-w-2xl text-xl font-medium leading-relaxed text-gray-800">
+            Manage interviewer profiles, customize their personas, and assign them to interviews.
+          </p>
         </div>
-        <div className="relative flex items-center mt-2 ">
-          <div
-            id="slider"
-            className=" h-44 pt-2 overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide w-[40rem]"
-          >
-            {interviewers.length === 0 ? <CreateInterviewerButton /> : <></>}
-            {!interviewersLoading ? (
-              <>
-                {interviewers.map((interviewer) => (
-                  <InterviewerCard key={interviewer.id} interviewer={interviewer} />
-                ))}
-              </>
-            ) : (
-              <InterviewersLoader />
-            )}
-          </div>
-          {interviewers.length > 4 ? (
-            <div className="flex-row justify-center items-center space-y-10">
-              <ChevronRight
-                className="opacity-50 cursor-pointer hover:opacity-100"
-                size={40}
-                onClick={slideRight}
-              />
-              <ChevronLeft
-                className="opacity-50 cursor-pointer hover:opacity-100"
-                size={40}
-                onClick={() => slideLeft()}
-              />
-            </div>
+        
+        <div className="w-full mt-8">
+          {interviewersLoading ? (
+            <InterviewersLoader />
           ) : (
-            <></>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              <CreateInterviewerButton />
+              {interviewers.map((interviewer) => (
+                <InterviewerCard key={interviewer.id} interviewer={interviewer} />
+              ))}
+            </div>
           )}
         </div>
-      </div>
+      </section>
     </main>
   );
 }
