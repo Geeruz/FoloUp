@@ -157,18 +157,18 @@ function EditInterview({ interview }: EditInterviewProps) {
           <div className="flex flex-row gap-3">
             <Button
               disabled={isClicked}
-              className="bg-indigo-600 hover:bg-indigo-800 mt-2"
+              className="bg-slate-900 text-white hover:bg-black mt-2 font-semibold px-6 rounded-full shadow-md transition-all hover:-translate-y-1"
               onClick={() => {
                 setIsClicked(true);
                 onSave();
               }}
             >
-              Save <SaveIcon size={16} className="ml-2" />
+              SAVE
             </Button>
             <AlertDialog>
-              <AlertDialogTrigger>
-                <Button disabled={isClicked} className="bg-red-500 hover:bg-red-600 mr-5 mt-2 p-2">
-                  <TrashIcon size={16} className="" />
+              <AlertDialogTrigger asChild>
+                <Button disabled={isClicked} className="bg-red-50 text-red-600 hover:bg-red-100 mr-5 mt-2 p-3 rounded-full transition-all hover:-translate-y-1">
+                  <TrashIcon size={18} className="" strokeWidth={2} />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -195,7 +195,7 @@ function EditInterview({ interview }: EditInterviewProps) {
         </div>
         <textarea
           value={description}
-          className="h-fit mt-3 ml-2 py-2 border-2 rounded-md w-[75%] px-2 border-gray-400"
+          className="h-fit mt-3 ml-2 py-3 border border-slate-200 rounded-[1rem] w-[75%] px-4 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-sm transition-all resize-y"
           placeholder="Enter your interview description here."
           rows={3}
           onChange={(e) => {
@@ -208,7 +208,7 @@ function EditInterview({ interview }: EditInterviewProps) {
         <p className="mt-3 mb-1 ml-2 font-medium">Objective</p>
         <textarea
           value={objective}
-          className="h-fit mt-3 ml-2 py-2 border-2 rounded-md w-[75%] px-2 border-gray-400"
+          className="h-fit mt-3 ml-2 py-3 border border-slate-200 rounded-[1rem] w-[75%] px-4 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-sm transition-all resize-y"
           placeholder="Enter your interview objective here."
           rows={3}
           onChange={(e) => setObjective(e.target.value)}
@@ -230,7 +230,7 @@ function EditInterview({ interview }: EditInterviewProps) {
                     <button
                       type="button"
                       className={`w-[96px] overflow-hidden rounded-full ${
-                        selectedInterviewer === item.id ? "border-4 border-indigo-600" : ""
+                        selectedInterviewer === item.id ? "border-[3px] border-slate-900 shadow-md scale-105 transition-all" : "border-2 border-transparent"
                       }`}
                       onClick={() => {
                         setSelectedInterviewer(item.id);
@@ -258,8 +258,8 @@ function EditInterview({ interview }: EditInterviewProps) {
             </span>
             <Switch
               checked={isAnonymous}
-              className={`ml-4 mt-1 border-2 border-gray-300 ${
-                isAnonymous ? "bg-indigo-600" : "bg-white"
+              className={`ml-4 mt-1 border border-transparent shadow-sm rounded-full ${
+                isAnonymous ? "bg-slate-900" : "bg-slate-200"
               }`}
               onCheckedChange={(checked) => setIsAnonymous(checked)}
             />
@@ -279,7 +279,7 @@ function EditInterview({ interview }: EditInterviewProps) {
               step="1"
               max="5"
               min={questions.length.toString()}
-              className="border-2 text-center focus:outline-none  bg-slate-100 rounded-md border-gray-500 w-14 px-2 py-0.5 ml-3"
+              className="border border-slate-200 text-center focus:outline-none bg-white text-slate-900 font-semibold rounded-xl w-16 px-2 py-1 ml-3 shadow-sm focus:ring-2 focus:ring-slate-900 transition-all"
               value={numQuestions}
               onChange={(e) => {
                 let value = e.target.value;
@@ -299,7 +299,7 @@ function EditInterview({ interview }: EditInterviewProps) {
               step="1"
               max="10"
               min="1"
-              className="border-2 text-center focus:outline-none bg-slate-100 rounded-md border-gray-500 w-14 px-2 py-0.5 ml-3"
+              className="border border-slate-200 text-center focus:outline-none bg-white text-slate-900 font-semibold rounded-xl w-16 px-2 py-1 ml-3 shadow-sm focus:ring-2 focus:ring-slate-900 transition-all"
               value={Number(duration)}
               onChange={(e) => {
                 let value = e.target.value;
@@ -314,7 +314,7 @@ function EditInterview({ interview }: EditInterviewProps) {
           </div>
         </div>
         <p className="mt-3 mb-1 ml-2 font-medium">Questions</p>
-        <ScrollArea className="flex ml-2 p-2 pr-4 mb-4 flex-col justify-center items-center w-[75%] max-h-[500px] bg-slate-100 rounded-md text-sm mt-3">
+        <ScrollArea className="flex ml-2 p-2 pr-4 mb-4 flex-col justify-center items-center w-[75%] max-h-[500px] bg-transparent text-sm mt-3">
           {questions.map((question, index) => (
             <QuestionCard
               key={question.id}
@@ -328,13 +328,13 @@ function EditInterview({ interview }: EditInterviewProps) {
           {questions.length < numQuestions ? (
             <button
               type="button"
-              className="border-indigo-600 opacity-75 hover:opacity-100 w-fit text-center rounded-full mx-auto"
+              className="bg-slate-900 hover:bg-black rounded-full p-4 text-white transition-all shadow-md hover:shadow-lg hover:-translate-y-1 mx-auto block"
               onClick={handleAddQuestion}
             >
               <Plus
-                size={45}
-                strokeWidth={2.2}
-                className="text-indigo-600 text-center cursor-pointer"
+                size={28}
+                strokeWidth={2.5}
+                className="text-white text-center cursor-pointer"
               />
             </button>
           ) : (

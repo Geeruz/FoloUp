@@ -53,24 +53,24 @@ const createInterviewerCard = () => {
 
   return (
     <>
-      <div className="flex h-72 w-full cursor-pointer flex-col items-center justify-center rounded-[1.75rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl">
+      <div className="flex w-full cursor-pointer flex-col items-center justify-center rounded-[1.75rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
         <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-sky-100 text-sky-700 shadow-sm">
           <Plus size={32} />
         </div>
-        <CardTitle className="text-lg font-semibold">Add a new interviewer</CardTitle>
+        <CardTitle className="text-lg font-semibold">New Interviewer</CardTitle>
         <p className="mt-2 text-sm leading-6 text-slate-500 text-center">
-          Create a custom interviewer profile for tailored evaluation conversations.
+          Create a custom AI interviewer persona tailored to your evaluation needs.
         </p>
         <Button className="mt-6 rounded-full px-6 py-3" onClick={() => setOpen(true)}>
-          Add interviewer
+          Create Interviewer
         </Button>
       </div>
 
       <Modal open={open} closeOnOutsideClick={true} onClose={() => setOpen(false)}>
         <div className="text-center w-[40rem] rounded-[1.75rem] bg-slate-950 p-8 text-white shadow-2xl">
-          <CardTitle className="text-3xl font-semibold leading-tight text-white">Design your interviewer</CardTitle>
+          <CardTitle className="text-3xl font-semibold leading-tight text-white">Create Interviewer</CardTitle>
           <p className="mt-2 text-sm text-slate-300">
-            Configure behaviors, choose an avatar, and save a reusable interviewer persona.
+            Configure personality traits, choose an avatar, and save a reusable interviewer profile.
           </p>
 
           <div className="mt-8 flex gap-10">
@@ -97,7 +97,7 @@ const createInterviewerCard = () => {
 
             <div className="flex-1 space-y-6 text-left">
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-slate-300">Interviewer name</label>
+                <label className="block text-sm font-medium text-slate-300">Name</label>
                 <input
                   type="text"
                   className="w-full rounded-3xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 outline-none focus:border-sky-400"
@@ -140,7 +140,7 @@ const createInterviewerCard = () => {
                 onSave();
               }}
             >
-              Save interviewer
+              Save Interviewer
             </Button>
           </div>
         </div>
@@ -148,7 +148,7 @@ const createInterviewerCard = () => {
 
       <Modal open={gallery} closeOnOutsideClick={true} onClose={() => setGallery(false)}>
         <div className="text-left w-[24rem] rounded-[1.5rem] bg-white p-6 shadow-2xl">
-          <CardTitle className="text-2xl font-semibold text-slate-900">Select an avatar</CardTitle>
+          <CardTitle className="text-2xl font-semibold text-slate-900">Choose Avatar</CardTitle>
           <ScrollArea className="mt-4 h-96 rounded-3xl border border-slate-200 p-3">
             <div className="grid grid-cols-2 gap-3">
               {avatars.map((item) => (

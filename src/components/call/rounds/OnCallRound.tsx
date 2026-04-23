@@ -318,14 +318,16 @@ export default function OnCallRound({
       {/* End call button */}
       <div className="mt-6 flex justify-center">
         <AlertDialog>
-          <AlertDialogTrigger className="w-full">
-            <Button
-              className="bg-white text-slate-900 border border-red-300 hover:bg-red-50 h-10 mx-auto flex flex-row justify-center"
-              disabled={!isCalling}
-            >
-              End Interview{" "}
-              <XCircleIcon className="h-5 w-5 ml-2 text-red-500" />
-            </Button>
+          <AlertDialogTrigger asChild>
+            <div className="w-full flex justify-center">
+              <Button
+                className="bg-white text-slate-900 border border-red-300 hover:bg-red-50 h-10 mx-auto flex flex-row justify-center"
+                disabled={!isCalling}
+              >
+                End Interview{" "}
+                <XCircleIcon className="h-5 w-5 ml-2 text-red-500" />
+              </Button>
+            </div>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

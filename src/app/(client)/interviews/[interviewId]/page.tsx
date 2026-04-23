@@ -30,7 +30,8 @@ import { useOrganization } from "@clerk/nextjs";
 import { Eye, Filter, Palette, Pencil, Share2, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, use } from "react";
-import { ChromePicker } from "react-color";
+import dynamic from "next/dynamic";
+const ChromePicker = dynamic(() => import("react-color").then((mod) => mod.ChromePicker), { ssr: false });
 import { toast } from "sonner";
 
 interface Props {
@@ -82,23 +83,23 @@ function InterviewHome({ params, searchParams }: Props) {
   useEffect(() => {
     const fetchInterview = async () => {
       try {
+        setLoading(true);
         const response = await getInterviewById(resolvedParams.interviewId);
         setInterview(response);
         setIsActive(response.is_active);
         setIsViewed(response.is_viewed);
         setThemeColor(response.theme_color ?? "#4F46E5");
         seticonColor(response.theme_color ?? "#4F46E5");
-        setLoading(true);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
       }
     };
-    if (!interview || !isGeneratingInsights) {
+    if (!interview) {
       fetchInterview();
     }
-  }, [getInterviewById, resolvedParams.interviewId, isGeneratingInsights, interview]);
+  }, [getInterviewById, resolvedParams.interviewId, interview]);
 
   useEffect(() => {
     const fetchOrganizationData = async () => {

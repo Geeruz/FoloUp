@@ -236,7 +236,7 @@ function CallInfo({ call_id, onDeleteResponse, onCandidateStatusChange }: CallPr
                       </SelectContent>
                     </Select>
                     <AlertDialog>
-                      <AlertDialogTrigger>
+                      <AlertDialogTrigger asChild>
                         <Button disabled={isClicked} className="bg-red-500 hover:bg-red-600 p-2">
                           <TrashIcon size={16} className="" />
                         </Button>
@@ -359,13 +359,13 @@ function CallInfo({ call_id, onDeleteResponse, onCandidateStatusChange }: CallPr
               <div className="flex flex-col gap-3 text-sm p-4 rounded-2xl bg-slate-50">
                 <div className="flex flex-row gap-2  align-middle">
                   <p className="my-auto">User Sentiment: </p>
-                  <p className="font-medium my-auto">
+                  <div className="font-medium my-auto">
                     {call?.call_analysis?.user_sentiment === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (
                       call?.call_analysis?.user_sentiment
                     )}
-                  </p>
+                  </div>
 
                   <div
                     className={`${

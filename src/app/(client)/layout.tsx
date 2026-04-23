@@ -46,7 +46,7 @@ export default function RootLayout({
         <meta name="description" content={metadata.description} />
         <link rel="icon" href="/browser-client-icon.ico" />
       </head>
-      <body className={cn(inter.className, "antialiased overflow-hidden min-h-screen")}>
+      <body suppressHydrationWarning className={cn(inter.className, "antialiased overflow-hidden min-h-screen")}>
         <ClerkProvider
           dynamic
           signInFallbackRedirectUrl={"/dashboard"}

@@ -15,11 +15,11 @@ const interviewerCard = ({ interviewer }: Props) => {
   return (
     <>
       <Card
-        className="group relative h-48 w-44 cursor-pointer overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white text-slate-950 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+        className="group relative w-full cursor-pointer overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white text-slate-950 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
         onClick={() => setOpen(true)}
       >
         <CardContent className="p-0">
-          <div className="h-28 overflow-hidden rounded-t-[1.75rem] bg-slate-950">
+          <div className="h-40 overflow-hidden rounded-t-[1.75rem] bg-slate-950">
             <Image
               src={interviewer.image}
               alt="Interviewer avatar"

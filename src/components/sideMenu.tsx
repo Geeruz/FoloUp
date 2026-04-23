@@ -13,11 +13,12 @@ function SideMenu() {
       <div className="flex h-full flex-col justify-between gap-6">
         <div className="space-y-6">
           <div className="rounded-[1.75rem] bg-slate-50 px-4 py-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Workspace</p>
-            <p className="mt-3 text-sm font-semibold text-slate-900">Hiring operations</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Navigation</p>
+            <p className="mt-3 text-sm font-semibold text-slate-900">Interview Studio</p>
           </div>
 
           <button
+            suppressHydrationWarning
             type="button"
             className={`flex w-full items-center gap-3 rounded-[1.5rem] px-4 py-3 text-left text-sm font-semibold transition ${
               pathname.endsWith("/dashboard") || pathname.includes("/interviews")
@@ -31,6 +32,7 @@ function SideMenu() {
           </button>
 
           <button
+            suppressHydrationWarning
             type="button"
             className={`flex w-full items-center gap-3 rounded-[1.5rem] px-4 py-3 text-left text-sm font-semibold transition ${
               pathname.endsWith("/interviewers")
@@ -45,8 +47,8 @@ function SideMenu() {
         </div>
 
         <div className="rounded-[1.75rem] bg-slate-50 p-4 text-sm text-slate-600 shadow-sm">
-          <p className="font-semibold text-slate-900">Focus</p>
-          <p className="mt-2 text-xs leading-6">Review interviews, manage talent, and keep your hiring workflow efficient.</p>
+          <p className="font-semibold text-slate-900">Pro Tip</p>
+          <p className="mt-2 text-xs leading-6">Review interviews, manage your talent pipeline, and streamline your hiring workflow.</p>
         </div>
       </div>
     </aside>
