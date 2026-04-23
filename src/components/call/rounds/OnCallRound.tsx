@@ -4,6 +4,7 @@ import type { Interview } from "@/types/interview";
 import { RetellWebClient } from "retell-client-js-sdk";
 import Image from "next/image";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import type { TextRoundTranscript } from "./TextRound";
 import axios from "axios";
 import { XCircleIcon } from "lucide-react";
 import {
@@ -38,12 +39,18 @@ type transcriptType = {
 interface OnCallRoundProps {
   interview: Interview;
   userName: string;
+  hrTranscripts?: TextRoundTranscript[];
+  evaluationTranscripts?: TextRoundTranscript[];
+  resumeText?: string;
   onRoundComplete: (callId: string) => void;
 }
 
 export default function OnCallRound({
   interview,
   userName,
+  hrTranscripts,
+  evaluationTranscripts,
+  resumeText,
   onRoundComplete,
 }: OnCallRoundProps) {
   const webClientRef = useRef<RetellWebClient | null>(null);
@@ -143,6 +150,12 @@ export default function OnCallRound({
           onCallQuestions ||
           interview.questions.map((q) => q.question).join(", "),
         name: userName || "not provided",
+        resume: resumeText || "No resume provided",
+        previous_answers: `HR Round Answers:\n${
+          hrTranscripts?.map((t) => `Q: ${t.question}\nA: ${t.answer}`).join("\n\n") || "None"
+        }\n\nEvaluation Round Answers:\n${
+          evaluationTranscripts?.map((t) => `Q: ${t.question}\nA: ${t.answer}`).join("\n\n") || "None"
+        }`
       };
 
       try {
@@ -208,12 +221,12 @@ export default function OnCallRound({
     return (
       <div className="flex flex-col items-center justify-center h-full py-16">
         <div className="relative">
-          <div className="w-20 h-20 rounded-full border-4 border-gray-200 border-t-indigo-600 animate-spin" />
+          <div className="w-20 h-20 rounded-full border-4 border-slate-200 border-t-sky-600 animate-spin" />
         </div>
-        <p className="mt-6 text-lg font-semibold text-gray-700">
+        <p className="mt-6 text-lg font-semibold text-slate-900">
           Connecting to AI Interviewer...
         </p>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-slate-500">
           Please ensure your microphone is enabled
         </p>
       </div>
@@ -225,15 +238,15 @@ export default function OnCallRound({
   }
 
   return (
-    <div className="flex flex-col h-full px-2 py-2">
+    <div className="flex flex-col h-full px-6 py-6">
       {/* Round header */}
-      <div className="flex items-center justify-center gap-2 mb-3">
-        <span className="text-xl">📞</span>
-        <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+      <div className="flex items-center justify-center gap-2 mb-6 pb-4 border-b border-slate-200">
+        <span className="text-2xl">📞</span>
+        <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
           On Call Round
         </span>
         {isCalling && (
-          <span className="flex items-center gap-1 ml-2 px-2 py-0.5 bg-green-100 rounded-full">
+          <span className="flex items-center gap-1 ml-2 px-3 py-1 bg-green-100 rounded-full">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-xs font-medium text-green-700">Live</span>
           </span>
@@ -241,24 +254,24 @@ export default function OnCallRound({
       </div>
 
       {/* Call content */}
-      <div className="flex flex-row p-2 grow">
+      <div className="flex flex-row gap-6 flex-1 overflow-hidden">
         {/* Interviewer side */}
-        <div className="border-x-2 border-grey w-[50%] my-auto min-h-[70%]">
-          <div className="flex flex-col justify-evenly">
-            <div className="text-[22px] w-[80%] md:text-[26px] mt-4 min-h-[250px] mx-auto px-6">
-              {lastInterviewerResponse}
+        <div className="flex-1 border-r border-slate-200 flex flex-col">
+          <div className="flex flex-col justify-between h-full">
+            <div className="text-lg md:text-xl font-normal leading-relaxed min-h-[140px] outline-none text-slate-900 py-4">
+              {lastInterviewerResponse || <span className="text-slate-400 italic">Listening...</span>}
             </div>
-            <div className="flex flex-col mx-auto justify-center items-center align-middle">
+            <div className="flex flex-col justify-center items-center gap-3">
               {interviewerImg && (
                 <Image
                   src={interviewerImg}
-                  alt="Image of the interviewer"
-                  width={120}
-                  height={120}
-                  className={`object-cover object-center mx-auto my-auto ${
+                  alt="Interviewer"
+                  width={100}
+                  height={100}
+                  className={`object-cover object-center rounded-full ${
                     activeTurn === "agent"
-                      ? `border-4 rounded-full`
-                      : ""
+                      ? `border-4`
+                      : "border-2 border-slate-200"
                   }`}
                   style={
                     activeTurn === "agent"
@@ -267,29 +280,29 @@ export default function OnCallRound({
                   }
                 />
               )}
-              <div className="font-semibold">Interviewer</div>
+              <div className="font-semibold text-slate-900">Interviewer</div>
             </div>
           </div>
         </div>
 
         {/* User side */}
-        <div className="flex flex-col justify-evenly w-[50%]">
+        <div className="flex-1 flex flex-col">
           <div
             ref={lastUserResponseRef}
-            className="text-[22px] w-[80%] md:text-[26px] mt-4 mx-auto h-[250px] px-6 overflow-y-auto"
+            className="text-lg md:text-xl font-normal leading-relaxed min-h-[140px] py-4 overflow-y-auto text-slate-900"
           >
-            {lastUserResponse}
+            {lastUserResponse || <span className="text-slate-400 italic">You are listening...</span>}
           </div>
-          <div className="flex flex-col mx-auto justify-center items-center align-middle">
+          <div className="flex flex-col justify-center items-center gap-3">
             <Image
               src="/user-icon.png"
-              alt="Picture of the user"
-              width={120}
-              height={120}
-              className={`object-cover object-center mx-auto my-auto ${
+              alt="You"
+              width={100}
+              height={100}
+              className={`object-cover object-center rounded-full ${
                 activeTurn === "user"
-                  ? `border-4 rounded-full`
-                  : ""
+                  ? `border-4`
+                  : "border-2 border-slate-200"
               }`}
               style={
                 activeTurn === "user"
@@ -297,21 +310,21 @@ export default function OnCallRound({
                   : undefined
               }
             />
-            <div className="font-semibold">You</div>
+            <div className="font-semibold text-slate-900">You</div>
           </div>
         </div>
       </div>
 
       {/* End call button */}
-      <div className="items-center p-2">
+      <div className="mt-6 flex justify-center">
         <AlertDialog>
           <AlertDialogTrigger className="w-full">
             <Button
-              className="bg-white text-black border border-indigo-600 h-10 mx-auto flex flex-row justify-center mb-4"
+              className="bg-white text-slate-900 border border-red-300 hover:bg-red-50 h-10 mx-auto flex flex-row justify-center"
               disabled={!isCalling}
             >
               End Interview{" "}
-              <XCircleIcon className="h-[1.5rem] ml-2 w-[1.5rem] rotate-0 scale-100 dark:-rotate-90 dark:scale-0 text-red" />
+              <XCircleIcon className="h-5 w-5 ml-2 text-red-500" />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -324,7 +337,7 @@ export default function OnCallRound({
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                className="bg-indigo-600 hover:bg-indigo-800"
+                className="bg-sky-600 hover:bg-sky-700 text-white"
                 onClick={handleEndCall}
               >
                 End Interview

@@ -22,54 +22,32 @@ type PopupProps = {
 
 function PopupLoader() {
   return (
-    <div className="bg-white rounded-md absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:w-[80%] w-[90%]">
-      <div className="h-[88vh] justify-center items-center rounded-lg border-2 border-b-4 border-r-4 border-black font-bold transition-all md:block dark:border-white">
-        <div className="relative flex flex-col items-center justify-center h-full">
+    <div className="absolute left-1/2 top-1/2 z-10 w-full max-w-5xl -translate-x-1/2 -translate-y-1/2 px-4">
+      <div className="h-[88vh] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 shadow-2xl">
+        <div className="flex h-full flex-col items-center justify-center rounded-[2rem] bg-slate-950/90 p-10 text-center text-slate-100">
           <LoaderWithText />
         </div>
       </div>
-      <a
-        className="flex flex-row justify-center align-middle mt-3"
-        href="https://pinestacks.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <div className="text-center text-md font-semibold mr-2">
-          Powered by{" "}
-          <span className="font-bold">
-            Provly
-          </span>
-        </div>
-        <ArrowUpRightSquareIcon className="h-[1.5rem] w-[1.5rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500" />
-      </a>
+      <div className="mt-4 text-center text-sm text-slate-400">
+        Powered by <span className="font-semibold text-white">Provly</span>
+      </div>
     </div>
   );
 }
 
 function PopUpMessage({ title, description, image }: PopupProps) {
   return (
-    <div className="bg-white rounded-md absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:w-[80%] w-[90%]">
-      <div className="h-[88vh] content-center rounded-lg border-2 border-b-4 border-r-4 border-black font-bold transition-all  md:block dark:border-white ">
-        <div className="flex flex-col items-center justify-center my-auto">
-          <Image src={image} alt="Graphic" width={200} height={200} className="mb-4" />
-          <h1 className="text-md font-medium mb-2">{title}</h1>
-          <p>{description}</p>
+    <div className="absolute left-1/2 top-1/2 z-10 w-full max-w-5xl -translate-x-1/2 -translate-y-1/2 px-4">
+      <div className="h-[88vh] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/95 shadow-2xl">
+        <div className="flex h-full flex-col items-center justify-center gap-6 rounded-[2rem] bg-slate-950/90 p-10 text-center text-slate-100">
+          <Image src={image} alt="Graphic" width={220} height={220} className="mb-4" />
+          <h1 className="text-2xl font-semibold text-white">{title}</h1>
+          <p className="max-w-xl text-slate-300">{description}</p>
         </div>
       </div>
-      <a
-        className="flex flex-row justify-center align-middle mt-3"
-        href="https://pinestacks.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <div className="text-center text-md font-semibold mr-2">
-          Powered by{" "}
-          <span className="font-bold">
-            Provly
-          </span>
-        </div>
-        <ArrowUpRightSquareIcon className="h-[1.5rem] w-[1.5rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500" />
-      </a>
+      <div className="mt-5 text-center text-sm text-slate-400">
+        Powered by <span className="font-semibold text-white">Provly</span>
+      </div>
     </div>
   );
 }

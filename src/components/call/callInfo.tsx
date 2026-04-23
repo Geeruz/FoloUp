@@ -387,7 +387,13 @@ function CallInfo({ call_id, onDeleteResponse, onCandidateStatusChange }: CallPr
                     {call?.call_analysis?.call_summary === undefined && analytics?.softSkillSummary === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (
-                      (analytics?.softSkillSummary || call?.call_analysis?.call_summary || "No summary available")
+                      (
+                        analytics?.softSkillSummary ||
+                        call?.call_analysis?.call_summary ||
+                        (analytics?.redFlags?.includes("API quota exceeded")
+                          ? "Analytics temporarily unavailable due to API quota limits"
+                          : "No summary available")
+                      )
                     )}
                   </div>
                 </div>

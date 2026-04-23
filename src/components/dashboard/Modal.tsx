@@ -11,30 +11,24 @@ interface ModalProps {
 export default function Modal({ open, onClose, closeOnOutsideClick = true, children }: ModalProps) {
   return (
     <div
-      className={`fixed z-50 inset-0 flex justify-center items-center transition-colors
-      ${open ? "visible bg-black/30" : "invisible"}
-      `}
+      className={`fixed inset-0 z-50 flex items-center justify-center px-4 py-6 transition-all ${
+        open ? "visible bg-slate-950/70" : "invisible"
+      }`}
       onClick={closeOnOutsideClick ? onClose : () => {}}
-      onKeyDown={(e) => {
-        if (e.key === "Escape" && closeOnOutsideClick) {
-          onClose();
-        }
-      }}
       role="presentation"
     >
       <div
-        className={`bg-white rounded-xl shadow p-6 transition-all
-        ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
-        `}
+        className={`relative w-full max-w-3xl overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white p-8 shadow-[0_35px_120px_rgba(15,23,42,0.15)] transition-transform ${
+          open ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+        }`}
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
       >
         <button
           type="button"
-          className="absolute top-2 right-2 p-1 rounded-lg text-gray-400 bg-white hover:text-gray-600"
+          className="absolute right-6 top-6 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
           onClick={onClose}
         >
-          <X size={24} />
+          <X size={20} />
         </button>
         {children}
       </div>

@@ -22,7 +22,9 @@ import {
   AlarmClockIcon,
   ArrowUpRightSquareIcon,
   CheckCircleIcon,
+  UploadIcon,
 } from "lucide-react";
+import { parsePdf } from "@/actions/parse-pdf";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
@@ -59,6 +61,34 @@ function Call({ interview }: InterviewProps) {
   const [time, setTime] = useState(0);
   const [currentTimeDuration, setCurrentTimeDuration] =
     useState<string>("0");
+  const [resumeText, setResumeText] = useState<string>("");
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [isParsingResume, setIsParsingResume] = useState(false);
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setResumeFile(file);
+      setIsParsingResume(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const result = await parsePdf(formData);
+        if (result?.success && result.text) {
+          setResumeText(result.text);
+          toast.success("Resume parsed successfully!");
+        } else {
+          toast.error("Failed to parse resume.");
+          setResumeFile(null);
+        }
+      } catch (error) {
+        toast.error("An error occurred while uploading. Please try again.");
+        setResumeFile(null);
+      } finally {
+        setIsParsingResume(false);
+      }
+    }
+  };
 
   const handleFeedbackSubmit = async (
     formData: Omit<FeedbackData, "interview_id">,
@@ -170,15 +200,15 @@ function Call({ interview }: InterviewProps) {
       100;
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       {isStarted && <TabSwitchWarning />}
-      <div className="bg-white rounded-md md:w-[80%] w-[90%]">
-        <Card className="h-[88vh] rounded-lg border-2 border-b-4 border-r-4 border-black text-xl font-bold transition-all md:block dark:border-white">
-          <div className="flex flex-col h-full">
+      <div className="relative mx-auto flex w-full max-w-7xl justify-center px-4 py-8">
+        <Card className="w-full rounded-[2rem] border border-slate-200 bg-white shadow-lg">
+          <div className="flex flex-col">
             {/* Progress bar */}
-            <div className="m-4 h-[15px] rounded-lg border-[1px] border-black">
+            <div className="m-4 rounded-[1.5rem] border border-slate-200 bg-slate-100 p-3 shadow-sm">
               <div
-                className="bg-indigo-600 h-[15px] rounded-lg transition-all duration-300"
+                className="h-3 rounded-full bg-slate-200 transition-all duration-300"
                 style={{
                   width: `${Math.min(progressPercent, 100)}%`,
                   backgroundColor: interview.theme_color || "#4F46E5",
@@ -187,27 +217,19 @@ function Call({ interview }: InterviewProps) {
             </div>
 
             {/* Interview header */}
-            <CardHeader className="items-center p-1">
+            <CardHeader className="flex flex-col gap-4 px-8 py-6 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200">
               {!isEnded && (
-                <CardTitle className="flex flex-row items-center text-lg md:text-xl font-bold mb-2">
+                <CardTitle className="text-3xl font-semibold tracking-tight text-slate-900">
                   {interview?.name}
                 </CardTitle>
               )}
               {!isEnded && (
-                <div className="flex mt-2 flex-row">
-                  <AlarmClockIcon
-                    className="h-[1rem] w-[1rem] rotate-0 scale-100 dark:-rotate-90 dark:scale-0 mr-2 font-bold"
-                    style={{ color: interview.theme_color }}
-                  />
-                  <div className="text-sm font-normal">
-                    Expected duration:{" "}
-                    <span
-                      className="font-bold"
-                      style={{ color: interview.theme_color }}
-                    >
-                      {interviewTimeDuration} mins{" "}
+                <div className="rounded-3xl bg-sky-50 px-4 py-3 shadow-sm border border-sky-200">
+                  <div className="flex items-center gap-3 text-sm text-slate-600">
+                    <AlarmClockIcon className="h-5 w-5 text-sky-600" />
+                    <span>
+                      Expected duration: <span className="font-semibold text-slate-900">{interviewTimeDuration} mins</span>
                     </span>
-                    or less
                   </div>
                 </div>
               )}
@@ -215,105 +237,108 @@ function Call({ interview }: InterviewProps) {
 
             {/* Pre-start form */}
             {!isStarted && !isEnded && !isOldUser && (
-              <div className="w-fit min-w-[400px] max-w-[400px] mx-auto mt-2 border border-indigo-200 rounded-md p-2 m-2 bg-slate-50">
-                <div>
+              <div className="mx-auto w-full max-w-3xl rounded-[1.5rem] border border-slate-200 bg-slate-50 p-8 shadow-md my-6">
+                <div className="space-y-8">
                   {interview?.logo_url && (
-                    <div className="p-1 flex justify-center">
+                    <div className="flex justify-center">
                       <Image
                         src={interview?.logo_url}
                         alt="Logo"
-                        className="h-10 w-auto"
+                        className="h-16 w-auto rounded-3xl bg-white p-3 border border-slate-200"
                         width={100}
                         height={100}
                       />
                     </div>
                   )}
-                  <div className="p-2 font-normal text-sm mb-4 whitespace-pre-line">
-                    {interview?.description}
-                    <p className="font-bold text-sm">
-                      {"\n"}Ensure your volume is up and grant microphone
-                      access when prompted. Additionally, please make sure
-                      you are in a quiet environment.
-                      {"\n\n"}This interview consists of 3 rounds:
-                      {"\n"}• HR Round — Text-based questions
-                      {"\n"}• Evaluation Round — Technical assessment
-                      {"\n"}• On Call Round — Live AI conversation
-                      {"\n\n"}Note: Tab switching will be recorded.
-                    </p>
+
+                  <div className="space-y-4 text-sm leading-7 text-slate-600">
+                    <p>{interview?.description}</p>
+                    <div className="rounded-3xl border border-sky-200 bg-sky-50 p-5 text-slate-700 shadow-sm">
+                      <p className="font-semibold text-slate-900">Interview structure</p>
+                      <ul className="mt-3 space-y-2 text-sm text-slate-600">
+                        <li>• HR Round — Text-based questions</li>
+                        <li>• Evaluation Round — Technical assessment</li>
+                        <li>• On Call Round — Live AI conversation</li>
+                      </ul>
+                      <p className="mt-4 text-slate-500">Tab switching is recorded automatically.</p>
+                    </div>
                   </div>
+
                   {!interview?.is_anonymous && (
-                    <div className="flex flex-col gap-2 justify-center">
-                      <div className="flex justify-center">
-                        <input
-                          value={email}
-                          className="h-fit mx-auto py-2 border-2 rounded-md w-[75%] self-center px-2 border-gray-400 text-sm font-normal"
-                          placeholder="Enter your email address"
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                      <div className="flex justify-center">
-                        <input
-                          value={name}
-                          className="h-fit mb-4 mx-auto py-2 border-2 rounded-md w-[75%] self-center px-2 border-gray-400 text-sm font-normal"
-                          placeholder="Enter your first name"
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </div>
+                    <div className="grid gap-4">
+                      <input
+                        value={email}
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="Enter your email address"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      <input
+                        value={name}
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="Enter your first name"
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                      <label className="flex cursor-pointer flex-col gap-3 rounded-3xl border border-dashed border-slate-300 bg-white px-4 py-5 text-sm text-slate-600 shadow-sm transition hover:border-sky-500 hover:text-slate-900">
+                        <div className="flex items-center gap-3">
+                          {isParsingResume ? <MiniLoader /> : <UploadIcon className="w-4 h-4" />}
+                          <span className="font-medium">
+                            {isParsingResume ? "Parsing..." : resumeFile ? resumeFile.name : "Upload Resume (Optional)"}
+                          </span>
+                        </div>
+                        <input type="file" className="hidden" accept=".pdf" onChange={handleResumeUpload} disabled={isParsingResume} />
+                      </label>
                     </div>
                   )}
-                </div>
-                <div className="w-[80%] flex flex-row mx-auto justify-center items-center align-middle">
-                  <Button
-                    className="min-w-20 h-10 rounded-lg flex flex-row justify-center mb-8"
-                    style={{
-                      backgroundColor:
-                        interview.theme_color ?? "#4F46E5",
-                      color: isLightColor(
-                        interview.theme_color ?? "#4F46E5",
-                      )
-                        ? "black"
-                        : "white",
-                    }}
-                    disabled={
-                      Loading ||
-                      (!interview?.is_anonymous &&
-                        (!isValidEmail || !name))
-                    }
-                    onClick={startInterview}
-                  >
-                    {!Loading ? "Start Interview" : <MiniLoader />}
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger>
-                      <Button
-                        className="bg-white border ml-2 text-black min-w-15 h-10 rounded-lg flex flex-row justify-center mb-8"
-                        style={{
-                          borderColor: interview.theme_color,
-                        }}
-                        disabled={Loading}
-                      >
-                        Exit
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you sure?
-                        </AlertDialogTitle>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-indigo-600 hover:bg-indigo-800"
-                          onClick={async () => {
-                            await onEndCallClick();
+
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <Button
+                      className="min-w-[10rem] rounded-2xl px-6 text-white"
+                      style={{
+                        backgroundColor: interview.theme_color ?? "#4F46E5",
+                        color: isLightColor(interview.theme_color ?? "#4F46E5") ? "black" : "white",
+                      }}
+                      disabled={
+                        Loading ||
+                        isParsingResume ||
+                        (!interview?.is_anonymous && (!isValidEmail || !name))
+                      }
+                      onClick={startInterview}
+                    >
+                      {!Loading ? "Start Interview" : <MiniLoader />}
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger>
+                        <Button
+                          variant="outline"
+                          className="min-w-[8rem] rounded-2xl px-6 text-slate-900 border-slate-300 hover:bg-slate-50"
+                          style={{
+                            borderColor: interview.theme_color,
                           }}
+                          disabled={Loading}
                         >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                          Exit
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you sure?
+                          </AlertDialogTitle>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-sky-600 hover:bg-sky-700 text-white"
+                            onClick={async () => {
+                              await onEndCallClick();
+                            }}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </div>
             )}
@@ -324,23 +349,23 @@ function Call({ interview }: InterviewProps) {
                 interview={interview}
                 userName={name}
                 userEmail={email}
+                resumeText={resumeText}
                 onInterviewComplete={handleInterviewComplete}
               />
             )}
 
             {/* End screen */}
             {isEnded && !isOldUser && (
-              <div className="w-fit min-w-[400px] max-w-[400px] mx-auto mt-2 border border-indigo-200 rounded-md p-2 m-2 bg-slate-50 absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+              <div className="w-full max-w-[450px] mx-auto my-8 border border-sky-200 rounded-2xl p-8 bg-sky-50 shadow-md">
                 <div>
-                  <div className="p-2 font-normal text-base mb-4 whitespace-pre-line">
-                    <CheckCircleIcon className="h-[2rem] w-[2rem] mx-auto my-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500" />
-                    <p className="text-lg font-semibold text-center">
+                  <div className="font-normal text-base mb-6">
+                    <CheckCircleIcon className="h-12 w-12 mx-auto my-4 text-sky-600" />
+                    <p className="text-lg font-semibold text-center text-slate-900">
                       {isStarted
                         ? "Thank you for taking the time to participate in this interview"
                         : "Thank you very much for considering."}
                     </p>
-                    <p className="text-center">
-                      {"\n"}
+                    <p className="text-center text-slate-700 mt-3">
                       You can close this tab now.
                     </p>
                   </div>
@@ -352,7 +377,7 @@ function Call({ interview }: InterviewProps) {
                     >
                       <AlertDialogTrigger className="w-full flex justify-center">
                         <Button
-                          className="bg-indigo-600 text-white h-10 mt-4 mb-4"
+                          className="bg-sky-600 text-white h-10 mt-4 hover:bg-sky-700"
                           onClick={() => setIsDialogOpen(true)}
                         >
                           Provide Feedback
@@ -372,16 +397,15 @@ function Call({ interview }: InterviewProps) {
 
             {/* Old user message */}
             {isOldUser && (
-              <div className="w-fit min-w-[400px] max-w-[400px] mx-auto mt-2 border border-indigo-200 rounded-md p-2 m-2 bg-slate-50 absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+              <div className="w-full max-w-[450px] mx-auto my-8 border border-amber-200 rounded-2xl p-8 bg-amber-50 shadow-md">
                 <div>
-                  <div className="p-2 font-normal text-base mb-4 whitespace-pre-line">
-                    <CheckCircleIcon className="h-[2rem] w-[2rem] mx-auto my-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500" />
-                    <p className="text-lg font-semibold text-center">
+                  <div className="font-normal text-base">
+                    <CheckCircleIcon className="h-12 w-12 mx-auto my-4 text-amber-600" />
+                    <p className="text-lg font-semibold text-center text-slate-900">
                       You have already responded in this interview or you
                       are not eligible to respond. Thank you!
                     </p>
-                    <p className="text-center">
-                      {"\n"}
+                    <p className="text-center text-slate-700 mt-3">
                       You can close this tab now.
                     </p>
                   </div>

@@ -10,35 +10,31 @@ interface Props {
 }
 
 const interviewerCard = ({ interviewer }: Props) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <Card
-        className="p-0 inline-block cursor-pointer hover:scale-105 ease-in-out duration-300 h-40 w-36 ml-1 mr-3 rounded-xl shrink-0 overflow-hidden shadow-md"
+        className="group relative h-48 w-44 cursor-pointer overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white text-slate-950 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
         onClick={() => setOpen(true)}
       >
         <CardContent className="p-0">
-          <div className="w-full h-28 overflow-hidden">
+          <div className="h-28 overflow-hidden rounded-t-[1.75rem] bg-slate-950">
             <Image
               src={interviewer.image}
-              alt="Picture of the interviewer"
-              width={200}
-              height={40}
-              className="w-full h-full object-cover object-center"
+              alt="Interviewer avatar"
+              width={300}
+              height={200}
+              className="h-full w-full object-cover"
             />
           </div>
-          <CardTitle className="mt-3 text-base text-center">{interviewer.name}</CardTitle>
+          <div className="p-4 text-center">
+            <CardTitle className="text-base font-semibold text-slate-900">{interviewer.name}</CardTitle>
+            <p className="mt-2 text-sm text-slate-500">Interviewer profile</p>
+          </div>
         </CardContent>
       </Card>
-      <Modal
-        open={open}
-        closeOnOutsideClick={true}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
+      <Modal open={open} closeOnOutsideClick={true} onClose={() => setOpen(false)}>
         <InterviewerDetailsModal interviewer={interviewer} />
       </Modal>
     </>

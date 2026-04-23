@@ -3,7 +3,7 @@
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import type { Question } from "@/types/interview";
 import { MicIcon, MicOffIcon, ArrowRightIcon, RotateCcwIcon } from "lucide-react";
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "../../ui/button";
 
 export interface TextRoundTranscript {
@@ -53,6 +53,12 @@ export default function TextRound({
     setQuestionState("recording");
   }, [resetTranscript, startListening]);
 
+  useEffect(() => {
+    if (isSupported && questionState === "ready" && !isListening) {
+      handleStartRecording();
+    }
+  }, [isSupported, questionState, isListening, handleStartRecording]);
+
   const handleStopRecording = useCallback(() => {
     stopListening();
     setQuestionState("review");
@@ -92,10 +98,10 @@ export default function TextRound({
     return (
       <div className="flex flex-col items-center justify-center p-8 text-center">
         <div className="text-5xl mb-4">🎙️</div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+        <h3 className="text-lg font-semibold text-slate-900 mb-2">
           Speech Recognition Not Supported
         </h3>
-        <p className="text-sm text-gray-500 max-w-md">
+        <p className="text-sm text-slate-500 max-w-md">
           Your browser doesn&apos;t support speech recognition. Please use
           Chrome, Edge, or Safari for the best experience.
         </p>
@@ -104,16 +110,16 @@ export default function TextRound({
   }
 
   return (
-    <div className="flex flex-col h-full px-4 py-2">
+    <div className="flex flex-col h-full px-4 py-6 max-w-3xl mx-auto w-full">
       {/* Round header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <span className="text-xl">{roundIcon}</span>
-          <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+          <span className="text-2xl">{roundIcon}</span>
+          <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
             {roundLabel}
           </span>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-slate-500">
           Question{" "}
           <span className="font-bold" style={{ color: themeColor }}>
             {currentQuestionIndex + 1}
@@ -123,7 +129,7 @@ export default function TextRound({
       </div>
 
       {/* Question progress bar */}
-      <div className="h-1.5 bg-gray-200 rounded-full mb-6 overflow-hidden">
+      <div className="h-2 bg-slate-200 rounded-full mb-8 overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
@@ -135,13 +141,13 @@ export default function TextRound({
 
       {/* Question card */}
       <div
-        className="rounded-xl p-6 mb-6 border"
+        className="rounded-2xl p-6 mb-8 border"
         style={{
           backgroundColor: `${themeColor}08`,
           borderColor: `${themeColor}25`,
         }}
       >
-        <p className="text-xl md:text-2xl font-semibold text-gray-800 leading-relaxed">
+        <p className="text-xl md:text-2xl font-semibold text-slate-900 leading-relaxed">
           {currentQuestion?.question}
         </p>
       </div>
@@ -151,21 +157,21 @@ export default function TextRound({
         {/* Transcript display */}
         <div
           className={`
-            flex-1 min-h-[120px] max-h-[200px] rounded-xl border-2 p-4 mb-4 overflow-y-auto
+            flex-1 min-h-[140px] max-h-[220px] rounded-2xl border-2 p-4 mb-6 overflow-y-auto
             transition-all duration-300
             ${
               questionState === "recording"
                 ? "border-red-300 bg-red-50"
                 : questionState === "review"
                   ? "border-green-300 bg-green-50"
-                  : "border-gray-200 bg-gray-50"
+                  : "border-slate-200 bg-white"
             }
           `}
         >
           {questionState === "ready" && (
-            <p className="text-gray-400 text-sm italic">
-              Click the microphone button below to start recording your
-              answer...
+            <p className="text-slate-400 text-sm italic">
+              Recording will start automatically. Please speak your answer when
+              prompted.
             </p>
           )}
           {questionState === "recording" && (
@@ -176,13 +182,13 @@ export default function TextRound({
                   Recording...
                 </span>
               </div>
-              <p className="text-gray-800 text-base leading-relaxed">
+              <p className="text-slate-900 text-base leading-relaxed">
                 {transcript}
                 {interimTranscript && (
-                  <span className="text-gray-400">{interimTranscript}</span>
+                  <span className="text-slate-400">{interimTranscript}</span>
                 )}
                 {!transcript && !interimTranscript && (
-                  <span className="text-gray-400 italic">
+                  <span className="text-slate-400 italic">
                     Speak now...
                   </span>
                 )}
@@ -196,7 +202,7 @@ export default function TextRound({
                   Your Answer
                 </span>
               </div>
-              <p className="text-gray-800 text-base leading-relaxed">
+              <p className="text-slate-900 text-base leading-relaxed">
                 {transcript || "(No speech detected)"}
               </p>
             </div>
@@ -211,7 +217,7 @@ export default function TextRound({
         )}
 
         {/* Action buttons */}
-        <div className="flex items-center justify-center gap-3 pb-2">
+        <div className="flex items-center justify-center gap-3 pb-4">
           {questionState === "ready" && (
             <button
               type="button"
@@ -225,7 +231,7 @@ export default function TextRound({
               }}
             >
               <MicIcon className="w-7 h-7" />
-              <span className="absolute -bottom-7 text-xs font-medium text-gray-500 whitespace-nowrap">
+              <span className="absolute -bottom-8 text-xs font-medium text-slate-500 whitespace-nowrap">
                 Tap to record
               </span>
             </button>
@@ -236,12 +242,12 @@ export default function TextRound({
               type="button"
               onClick={handleStopRecording}
               className="group relative w-16 h-16 rounded-full flex items-center justify-center
-                         bg-gradient-to-br from-gray-700 to-gray-800 text-white shadow-lg
+                         bg-gradient-to-br from-slate-700 to-slate-800 text-white shadow-lg
                          hover:shadow-xl hover:scale-105 transition-all duration-200
                          active:scale-95 animate-pulse"
             >
               <MicOffIcon className="w-7 h-7" />
-              <span className="absolute -bottom-7 text-xs font-medium text-gray-500 whitespace-nowrap">
+              <span className="absolute -bottom-8 text-xs font-medium text-slate-500 whitespace-nowrap">
                 Stop recording
               </span>
             </button>
@@ -251,7 +257,7 @@ export default function TextRound({
             <>
               <Button
                 variant="outline"
-                className="h-10 px-4 border-gray-300 text-gray-600 hover:bg-gray-100"
+                className="h-10 px-4 border-slate-300 text-slate-600 hover:bg-slate-50"
                 onClick={handleReRecord}
               >
                 <RotateCcwIcon className="w-4 h-4 mr-2" />

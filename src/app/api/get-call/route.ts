@@ -40,6 +40,16 @@ export async function POST(req: Request) {
   const analytics = result.analytics;
   const is_analysed = !!analytics;
 
+  if (!is_analysed) {
+    logger.error("Analytics generation failed", {
+      callId: body.id,
+      status: result.status,
+      error: result.error,
+    });
+  } else if (analytics?.redFlags?.includes("API quota exceeded")) {
+    logger.warn("Analytics generated with quota exceeded fallback", { callId: body.id });
+  }
+
   await ResponseService.saveResponse(
     {
       details: callResponse,
@@ -50,7 +60,15 @@ export async function POST(req: Request) {
     body.id,
   );
 
-  logger.info("Call analysed successfully");
+  if (is_analysed) {
+    if (analytics?.redFlags?.includes("API quota exceeded")) {
+      logger.info("Call analysis completed with quota exceeded fallback");
+    } else {
+      logger.info("Call analysed successfully");
+    }
+  } else {
+    logger.warn("Call analysis incomplete; analytics not saved", { callId: body.id });
+  }
 
   return NextResponse.json(
     {
