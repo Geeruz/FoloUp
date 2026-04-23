@@ -21,20 +21,26 @@ Evaluation Checks:
 - REASONING: Did they explain WHY? (Primary scoring factor).
 - UNDERSTANDING: Can they explain in own words with examples?
 
-Return JSON exactly matching this structure:
+Return ONLY valid JSON matching this exact structure (NO comments inside the JSON):
 {
-  "overallScore": number, // 0-100. 0-20: skipped/empty. 21-40: buzzwords/skipped. 41-70: decent but surface-level. 71-100: strong/exceptional. -15 penalty per skipped question.
-  "overallFeedback": string, // Max 80 words. Mention skipped count, understanding depth, reasoning strengths.
-  "conceptualUnderstanding": { "score": number, "feedback": string }, // 0-10 scale.
-  "communication": { "score": number, "feedback": string }, // 0-10 scale.
-  "questionSummaries": [{ 
-    "question": string, 
-    "summary": string // Keep it brief - just the direct answer/statement from the candidate. No analysis.
-  }], // Must include all questions provided.
-  "softSkillSummary": string, // 15-20 words.
-  "redFlags": [string], // e.g. "Skipped 3 questions", "Keyword stuffing"
-  "skippedQuestionCount": number
+  "overallScore": 85,
+  "overallFeedback": "Overall feedback text here...",
+  "conceptualUnderstanding": { "score": 8, "feedback": "Feedback here..." },
+  "communication": { "score": 9, "feedback": "Feedback here..." },
+  "questionSummaries": [
+    { "question": "Question 1", "summary": "Brief summary of answer..." }
+  ],
+  "softSkillSummary": "Brief soft skill summary...",
+  "redFlags": ["Any red flags here"],
+  "skippedQuestionCount": 0
 }
+
+Field instructions:
+- overallScore: 0-100. (0-20: skipped. 21-40: buzzwords. 41-70: surface-level. 71-100: strong. -15 penalty per skip).
+- overallFeedback: Max 80 words.
+- conceptualUnderstanding / communication scores: 0-10 scale.
+- questionSummaries summary: Direct answer only.
+- softSkillSummary: 15-20 words.
 
 Important: Use only provided questions. Be honest and strict.`;
 
